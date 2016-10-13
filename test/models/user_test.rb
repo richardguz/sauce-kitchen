@@ -34,7 +34,42 @@ class UserTest < ActiveSupport::TestCase
 	test "emails with valid format" do
 		valid_emails = ["poop@pants.com", "heyheyhey12345@g.ucla.edu", "wass.up@girl.net"]
 		valid_emails.each do |e|
-			assert e.valid?, 
+			@user.email = e
+			assert @user.valid?, "#{e.inspect} should be valid but is not returning valid"
 		end
 	end
+
+	test "emails with invalid format" do
+		invalid_addresses = %w[user@example,com user_at_foo.org user.name@example.
+                           foo@bar_baz.com foo@bar+baz.com]
+    invalid_addresses.each do |e|
+    	@user.email = e
+    	assert_not @user.valid?, "#{e.inspect} should be an invalid email"
+    end
+	end
+
+	test "emails should be unique" do
+		duplicate_user = @user.dup
+		duplicate_user.username = "something_different"
+		@user.save
+		assert_not duplicate_user.valid?
+		duplicate_user.email = duplicate_user.email.upcase
+		assert_not duplicate_user.valid?
+	end
+
+	test "usernames should be unique" do
+		duplicate_user = @user.dup
+		duplicate_user.email = "something_different@gmail.com"
+		@user.save
+		assert_not duplicate_user.valid?
+	end
+
+	test "before_save email downcasing" do
+		mixed_case_email = "aBcDeFg@gmail.com"
+		@user.email = mixed_case_email
+		@user.save
+		@user.reload
+		assert_equal mixed_case_email.downcase, @user.email
+	end
+
 end
