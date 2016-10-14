@@ -22,4 +22,10 @@ class UserSignInTest < ActionDispatch::IntegrationTest
   	assert_select "a[href=?]", logout_path, false
 		assert_select "a[href=?]", login_path
   end
+
+  test "redirect to signup" do
+    get login_path
+    assert_template 'sessions/new'
+    assert_select "a[href=?]", signup_path
+  end
 end
