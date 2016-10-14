@@ -7,4 +7,17 @@ class User < ApplicationRecord
 	validates :password, presence: true, length: {minimum: 6}
 	#for BCRYPT gem:
 	has_secure_password
+
+	def password_auth?(password)
+		BCrypt::Password.new(self.password_digest).is_password?(password)
+	end
+
+	class << self
+    # Returns the hash digest of the given string.
+    def digest(string)
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                    BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost: cost)
+    end
+  end
 end
