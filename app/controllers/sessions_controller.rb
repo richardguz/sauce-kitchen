@@ -21,10 +21,6 @@ class SessionsController < ApplicationController
   	redirect_to root_url
   end
 
-  def login(user)
-		session[:user_id] = user.id
-	end
-
 	def logout
 		if User.find_by(id: session[:user_id]) 
 			session.delete(:user_id)
