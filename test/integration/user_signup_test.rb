@@ -11,6 +11,7 @@ class UserSignupTest < ActionDispatch::IntegrationTest
 		end
 		follow_redirect!
 		assert_template 'show'
+		assert_not flash.empty?
 	end
 
 	test "invalid signup attempts" do
