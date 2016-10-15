@@ -7,6 +7,7 @@ class User < ApplicationRecord
 	validates :password, presence: true, length: {minimum: 6}
 	#for BCRYPT gem:
 	has_secure_password
+	has_many :playlists
 
 	def password_auth?(password)
 		BCrypt::Password.new(self.password_digest).is_password?(password)
