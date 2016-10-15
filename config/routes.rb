@@ -1,7 +1,7 @@
 Rails.application.routes.draw do  
-  root 'basic_pages#home'
+  resources :playlists
 
-  get 'sessions/new'
+  root 'basic_pages#home'
 
   get '/signup', to: 'users#new'
   post '/signup', to: 'users#create'
