@@ -15,4 +15,6 @@
 //= require turbolinks
 //= require_tree .
 //= require bootstrap-sprockets
+//= require underscore
+//= require gmaps/google
 
