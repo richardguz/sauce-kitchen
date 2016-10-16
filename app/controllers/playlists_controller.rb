@@ -1,6 +1,12 @@
 class PlaylistsController < ApplicationController
   def show
   	@playlist = Playlist.find_by(id: params[:id])
+    c_user = current_user
+    owner = @playlist.user
+    if @playlist.private && c_user != owner
+      flash[:info] = "The playlist you tried to access is private"
+      redirect_to root_url
+    end 
   end
 
   def new

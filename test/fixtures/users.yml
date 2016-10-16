@@ -2,5 +2,16 @@
 
 markus:
   username: markus
-  email: michael@example.com
+  email: markus@example.com
   password_digest: <%= User.digest('password') %>
+
+kyle:
+  username: iFartMoreThanRichAndMarkusCombined
+  email: kylebaker37@gmail.com
+  password_digest: <%= User.digest('password') %>
+
+rich:
+  username: iStillFartAlot
+  email: richguzikowski@ucla.edu
+  password_digest: <%= User.digest('password') %>
+
