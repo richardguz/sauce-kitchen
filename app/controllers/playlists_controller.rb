@@ -25,6 +25,13 @@ class PlaylistsController < ApplicationController
   	end
   end
 
+  def update
+    playlist = Playlist.find_by(id: params[:id])
+    playlist.title = params[:playlist][:title]
+    playlist.save
+    puts "SAVED"
+  end
+
   private
   	def playlist_params
   		params.require(:playlist).permit(:title, :songs) 

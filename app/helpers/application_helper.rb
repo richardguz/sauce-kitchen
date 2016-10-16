@@ -1,4 +1,5 @@
 module ApplicationHelper
+	include Dynaspan::ApplicationHelper
 
 	def full_title(page_title='')
 		base_title = 'Sauce Kitchen'
