@@ -1,5 +1,9 @@
 class SessionsController < ApplicationController
   def new
+    user = current_user
+    if user &&  user == User.find_by(id: session[:user_id])
+      redirect_to user
+    end
   end
 
   def create

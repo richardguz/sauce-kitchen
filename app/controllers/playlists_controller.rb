@@ -5,7 +5,6 @@ class PlaylistsController < ApplicationController
 
   def new
   	@playlist = Playlist.new
-  	puts @playlist
   end
 
   def create
