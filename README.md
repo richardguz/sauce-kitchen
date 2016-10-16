@@ -2,8 +2,8 @@
 
 THIS IS SAUCE KITCHEN!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* make sure you run a 'bundle install' before you get the server up and running after cloning/pulling the most recent version!
+
 
 Things you may want to cover:
 
