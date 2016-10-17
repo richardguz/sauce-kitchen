@@ -3,17 +3,15 @@ var infoWindow;
 
 var playlistMarkers = [];
 
-function initializeMap(playlists) {
+function initializeMap() {
 	infoWindow = new google.maps.InfoWindow({
     content: ""
 	});
 
 	map = new google.maps.Map(document.getElementById('map'), {
-	  center: {lat: -34.397, lng: -118.544},
+	  center: {lat: -34.06898, lng: -118.44292},
 	  zoom: 15
 	});
-
-  playlists = JSON.parse(playlists.replace(/(&quot\;)/g,"\"").replace(/(&gt\;)/g,"\""))
   
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
@@ -22,7 +20,27 @@ function initializeMap(playlists) {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+      $('#latitude').val(position.coords.latitude);
+      $('#longitude').val(position.coords.longitude);
       map.setCenter(pos);
+      infoWindow.setPosition(pos);
+			infoWindow.setContent('<div class="title">' +
+												'<h2>Your Current Location</h2>' +
+												'</div>' +
+												'<div class="notLocation">' +
+												'Not your location? You can enter your address here to get more accurate results.' +
+												'</div>');
+
+      var marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: "Your Location",
+        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+			});
+
+      marker.addListener('click', function() {
+				infoWindow.open(map, marker);
+      });
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -30,8 +48,11 @@ function initializeMap(playlists) {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
   }
+}
 
-  for (var i = 0; i < playlists.length; i++)
+function addPlaylistMarkers(playlists) {
+	playlists = JSON.parse(playlists.replace(/(&quot\;)/g,"\"").replace(/(&gt\;)/g,"\""))
+	for (var i = 0; i < playlists.length; i++)
   {
     var pos = {
       lat: parseFloat(playlists[i]["lat"]),

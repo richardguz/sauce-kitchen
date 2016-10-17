@@ -6,8 +6,19 @@
 		<%= form_for(@playlist, url: playlists_url) do |f| %>
 			<%= f.label :title %>
 			<%= f.text_field :title, class: "form-control" %>
+			<%= f.hidden_field :latitude, id: "latitude" %>
+			<%= f.hidden_field :longitude, id: "longitude" %>
 
 			<%= f.submit "Create!", class: "btn btn-primary" %>
 		<% end %>
 	</div>
 </div>
+
+<div id="map-container" style='width: 800px;'>
+  <div id="map" style='width: 800px; height: 400px;'></div>
+</div>
+
+<script type="text/javascript">
+  initializeMap();
+  var gps = getLocation();
+</script>
