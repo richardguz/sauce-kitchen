@@ -1,5 +1,7 @@
-<h1>Welcome to Sauce Kitchen</h1>
-<p>A damn fine music exploration and collaboration application built for you!</p>
-<% if current_user.nil? %>
-	<%= link_to "Sign Up and Start Cookin' Beats", signup_path %>
-<% end %>
+<div class="center jumbotron">
+	<h1>Welcome to Sauce Kitchen</h1>
+	<p>A damn fine music exploration and collaboration application built for you!</p>
+	<% if current_user.nil? %>
+		<%= link_to "Sign Up and Start Cookin' Beats", signup_path, class: "btn btn-primary btn-lg" %>
+	<% end %>
+</div>
