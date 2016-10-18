@@ -1,4 +1,4 @@
-<% if (current_user && (current_user.id == session[:user_id])) %>
+<% if (@user && (@user.id == @playlist_owner.id)) %>
 	<h1 id="title"><%= dynaspan_text_field(@playlist, :title) %></h1>
 <% else %>
 	<h1 id="title"><%= @playlist.title %></h1>

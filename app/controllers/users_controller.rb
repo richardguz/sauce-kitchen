@@ -15,7 +15,10 @@ class UsersController < ApplicationController
   end
 
   def show
-  	@user = User.find(params[:id])
+  	if !(@user = User.find_by(id: params[:id]))
+      flash[:warning] = "User #{params[:id]} doesn't exist... check your facts yo"
+      redirect_to root_url
+    end
 	end
 
   # def update
