@@ -1,9 +1,9 @@
 class PlaylistsController < ApplicationController
   def show
   	@playlist = Playlist.find_by(id: params[:id])
-    c_user = current_user
-    owner = @playlist.user
-    if @playlist.private && c_user != owner
+    @user = current_user
+    @playlist_owner = @playlist.user
+    if @playlist.private && @user != @playlist_owner
       flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
     end 
@@ -26,9 +26,14 @@ class PlaylistsController < ApplicationController
   end
 
   def update
-    playlist = Playlist.find_by(id: params[:id])
-    playlist.title = params[:playlist][:title]
-    playlist.save
+    @playlist = Playlist.find_by(id: params[:id])
+    @playlist.title = params[:playlist][:title]
+    @playlist.save
+    puts "ENTERING"
+    puts current_user.id 
+    puts session[:user_id]
+    puts "EXITING"
+    redirect_to @playlist
   end
 
   private
