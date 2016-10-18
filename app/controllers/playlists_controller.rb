@@ -29,7 +29,6 @@ class PlaylistsController < ApplicationController
     playlist = Playlist.find_by(id: params[:id])
     playlist.title = params[:playlist][:title]
     playlist.save
-    puts "SAVED"
   end
 
   private

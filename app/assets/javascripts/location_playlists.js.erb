@@ -1,5 +1,6 @@
 var map;
 var infoWindow;
+var locationMarker;
 
 var playlistMarkers = [];
 
@@ -7,11 +8,19 @@ function initializeMap() {
 	infoWindow = new google.maps.InfoWindow({
     content: ""
 	});
-
 	map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: -34.06898, lng: -118.44292},
 	  zoom: 15
 	});
+	locationMarker = new google.maps.Marker({
+		map: map,
+    title: "Your Location",
+    icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+	})
+
+	locationMarker.addListener('click', function() {
+		infoWindow.open(map, locationMarker);
+  });
   
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
@@ -29,18 +38,10 @@ function initializeMap() {
 												'</div>' +
 												'<div class="notLocation">' +
 												'Not your location? You can enter your address here to get more accurate results.' +
-												'</div>');
+												'</div>' +
+												'<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
 
-      var marker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        title: "Your Location",
-        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-			});
-
-      marker.addListener('click', function() {
-				infoWindow.open(map, marker);
-      });
+      locationMarker.setPosition(pos);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -109,11 +110,10 @@ function generateCoordinates(dialog) {
 	var address = fullAddress;
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
+    	$('#latitude').val(results[0].geometry.location.lat());
+      $('#longitude').val(results[0].geometry.location.lng());
       map.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location
-      });
+      locationMarker.setPosition(results[0].geometry.location);
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
     }
