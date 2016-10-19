@@ -5,17 +5,20 @@ THIS IS SAUCE KITCHEN!
 Our Team:
 
 Markus Notti:
-![Markus](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/markusProfile.jpg?raw=true)
+<br>
+<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
 
 Kyle Baker:
-![Kyle](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/kyleProfile.jpg?raw=true)
+<br>
+<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
 
 Rich Guzikowski:
 <br>
-![Rich]
+<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
 
 Sam Sobell:
-![Sam](/tree/master/app/assets/images/samProfile.jpg?raw=true)
+<br>
+<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
 
 Before running the server on your localhost...
 * brew install ImageMagick
