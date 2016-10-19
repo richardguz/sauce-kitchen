@@ -29,9 +29,23 @@ class PlaylistAccessTest < ActionDispatch::IntegrationTest
 
   	login_as(@user2)
   	get "/playlists/#{@playlist.id}"
-  	assert_select "h1", false, text: "Playlist for the boys"
+  	assert_select "h1", false, text: @playlist.title
   	assert_redirected_to root_url
   	follow_redirect!
   	assert_not flash.empty?
+  end
+
+  test "user editing own playlist details" do
+    login_as(@user)
+    get "/playlists/#{@playlist.id}"
+    assert_select "h1.ds"
+    assert_select "h1.nds", false
+  end
+
+  test "user editing other user's playlist details" do
+    login_as(@user2)
+    get "/playlists/#{@playlist.id}"
+    assert_select "h1.nds"
+    assert_select "h1.ds", false
   end
 end
