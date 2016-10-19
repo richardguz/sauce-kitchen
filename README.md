@@ -11,7 +11,7 @@ Kyle Baker:
 ![Kyle](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/kyleProfile.jpg?raw=true)
 
 Rich Guzikowski:
-![Rich](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/richProfile.jpg?raw=true)
+![Rich](http://creepbay.com/wp-content/uploads/2015/11/Poop-Monster.jpg)
 
 Sam Sobell:
 ![Sam](/tree/master/app/assets/images/samProfile.jpg?raw=true)
