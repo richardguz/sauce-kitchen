@@ -2,8 +2,10 @@
 
 THIS IS SAUCE KITCHEN!
 
-* make sure you run a 'bundle install' before you get the server up and running after cloning/pulling the most recent version!
-
+Before running the server on your localhost...
+* brew install ImageMagick
+* bundle install
+* rails db:migrate:reset
 
 Things you may want to cover:
 
