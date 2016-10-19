@@ -48,4 +48,11 @@ class PlaylistAccessTest < ActionDispatch::IntegrationTest
     assert_select "h1.nds"
     assert_select "h1.ds", false
   end
+
+  test "accessing a playlist that doesn't exist" do
+    get "/playlists/9999999999"
+    assert_redirected_to root_url
+    follow_redirect!
+    assert_not flash[:warning].empty?
+  end
 end
