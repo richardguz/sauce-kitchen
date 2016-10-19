@@ -13,6 +13,14 @@ class PlaylistsController < ApplicationController
     end 
   end
 
+  def show_user_playlists
+    @playlists = Playlist.where(user_id: params[:id])
+    @user = User.find_by(id: params[:id])
+    puts "YOOOO"
+    puts @playlists
+    render 'playlists/user_playlists'
+  end
+
   def new
   	@playlist = Playlist.new
   end

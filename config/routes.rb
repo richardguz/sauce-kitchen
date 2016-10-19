@@ -13,5 +13,7 @@ Rails.application.routes.draw do
 
   get '/show_playlists', to: 'location_playlists#show'
 
+  get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
+
   mount ActionCable.server => '/cable'
 end
