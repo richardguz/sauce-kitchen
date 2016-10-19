@@ -6,15 +6,15 @@ Our Team:
 
 Markus Notti:
 <br>
-<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
+<img src="app/assets/images/markusProfile.jpg?raw=true" width="250">
 
 Kyle Baker:
 <br>
-<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
+<img src="app/assets/images/richProfile.jpg?raw=true" width="250">
 
 Rich Guzikowski:
 <br>
-<img src="app/assets/images/kyleProfile.jpg?raw=true" width="250">
+<img src="app/assets/images/samProfile.jpg?raw=true" width="250">
 
 Sam Sobell:
 <br>
