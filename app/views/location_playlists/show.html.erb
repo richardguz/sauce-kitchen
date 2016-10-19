@@ -4,6 +4,12 @@
 
 <%= render 'layouts/enter_location' %>
 
+<button onClick='togglePlaylistMarkers()'>
+	<div id="toggle-playlists">
+		Hide Playlists
+	</div>
+</button>
+
 <script type="text/javascript">
   initializeMap('<%= @playlists %>');
 	addPlaylistMarkers('<%= @playlists %>');

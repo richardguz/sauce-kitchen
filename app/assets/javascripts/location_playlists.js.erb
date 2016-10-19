@@ -1,25 +1,35 @@
 var map;
 var infoWindow;
+var locationInfoWindow;
 var locationMarker;
+var locationIcon;
 
 var playlistMarkers = [];
+var showPlaylistMarkers = true;
 
 function initializeMap() {
 	infoWindow = new google.maps.InfoWindow({
     content: ""
 	});
+	locationInfoWindow = new google.maps.InfoWindow({
+    content: ""
+	});
 	map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: -34.06898, lng: -118.44292},
-	  zoom: 15
+	  zoom: 18
 	});
+	locationIcon = {
+    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // url
+    scaledSize: new google.maps.Size(50, 50), // scaled size
+	};
 	locationMarker = new google.maps.Marker({
 		map: map,
     title: "Your Location",
-    icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-	})
+    icon: locationIcon//"http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+	});
 
 	locationMarker.addListener('click', function() {
-		infoWindow.open(map, locationMarker);
+		locationInfoWindow.open(map, locationMarker);
   });
   
   // Try HTML5 geolocation.
@@ -32,8 +42,8 @@ function initializeMap() {
       $('#latitude').val(position.coords.latitude);
       $('#longitude').val(position.coords.longitude);
       map.setCenter(pos);
-      infoWindow.setPosition(pos);
-			infoWindow.setContent('<div class="title">' +
+      locationInfoWindow.setPosition(pos);
+			locationInfoWindow.setContent('<div class="title">' +
 												'<h2>Your Current Location</h2>' +
 												'</div>' +
 												'<div class="notLocation">' +
@@ -42,6 +52,7 @@ function initializeMap() {
 												'<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
 
       locationMarker.setPosition(pos);
+      locationInfoWindow.open(map, locationMarker);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -78,6 +89,23 @@ function addPlaylistMarkers(playlists) {
             infoWindow.open(map, marker);
         }
     })(marker, i));
+  }
+}
+
+function togglePlaylistMarkers() {
+	var buttonTitle = document.getElementById('toggle-playlists');
+	var title;
+	if (showPlaylistMarkers) {
+		title = "Show Playlists";
+	}
+	else {
+		title = "Hide Playlists";
+	}
+	showPlaylistMarkers = !showPlaylistMarkers;
+	buttonTitle.innerHTML = title;
+	for (var i = 0; i < playlistMarkers.length; i++)
+  {
+		playlistMarkers[i].setVisible(showPlaylistMarkers);
   }
 }
 
