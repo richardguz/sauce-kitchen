@@ -4,10 +4,20 @@ THIS IS SAUCE KITCHEN!
 
 Our Team:
 
-Markus - ![alt tag](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/markusProfile.jpg "Markus")
-Kyle - ![alt tag](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/kyleProfile.jpg "Kyle")
-Rich - ![alt tag](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/richProfile.jpg "Rich")
-Sam - ![alt tag](https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/samProfile.jpg "Sam")
+<table width=5>
+    <tr>
+        <td><center><img src="https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/markusProfile.jpg">
+        <br>Markus Notti</center></td>
+        <td><center><img src="https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/kyleProfile.jpg">
+        <br>Kyle Baker</center></td>
+    </tr>
+    <tr>
+        <td><center><img src="https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/richProfile.jpg">
+        <br>Rich Guzikowski</center></td>
+        <td><center><img src="https://github.com/scalableinternetservices/sauce-kitchen/tree/master/app/assets/images/samProfile.jpg">
+        <br>Sam Sobell</center></td>
+    </tr>
+</table>
 
 Before running the server on your localhost...
 * brew install ImageMagick
