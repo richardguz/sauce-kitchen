@@ -12,7 +12,7 @@ Kyle Baker:
 
 Rich Guzikowski:
 <br>
-![Rich](http://creepbay.com/wp-content/uploads/2015/11/Poop-Monster.jpg)
+![Rich]
 
 Sam Sobell:
 ![Sam](/tree/master/app/assets/images/samProfile.jpg?raw=true)
