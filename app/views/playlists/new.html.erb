@@ -6,6 +6,10 @@
 		<%= form_for(@playlist, url: playlists_url) do |f| %>
 			<%= f.label :title %>
 			<%= f.text_field :title, class: "form-control" %>
+			<%= f.label :private, class: 'checkbox inline' do %>
+      		<%= f.check_box :private %>
+      			<span>Make this playlist private</span>
+     		 <% end %>
 			<%= f.hidden_field :latitude, id: "latitude" %>
 			<%= f.hidden_field :longitude, id: "longitude" %>
 

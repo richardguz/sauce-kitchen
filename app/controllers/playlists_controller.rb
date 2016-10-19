@@ -42,6 +42,6 @@ class PlaylistsController < ApplicationController
 
   private
   	def playlist_params
-      params.require(:playlist).permit(:title, :songs, :longitude, :latitude)
+      params.require(:playlist).permit(:title, :songs, :longitude, :latitude, :private)
   	end
 end
