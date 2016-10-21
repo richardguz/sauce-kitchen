@@ -1,7 +1,75 @@
 <div class="center">
 	<% if (@user && (@user.id == @playlist_owner.id)) %>
-		<h1 id="title" class="ds"><%= dynaspan_text_field(@playlist, :title) %></h1>
-	<% else %>
-		<h1 id="title" class="nds"><%= @playlist.title %></h1>
-	<% end %>
+  <h1 id="title" class="ds"><%= dynaspan_text_field(@playlist, :title) %></h1>
+  <% else %>
+  <h1 id="title" class="nds"><%= @playlist.title %></h1>
+  <% end %>
 </div>
+
+<div id="dz-root"></div>
+<div id="player" style="width:100%;" align="center"></div>
+<br/>
+<div id="controlers">
+
+  <input type="button" onclick="DZ.player.playAlbum(302127); return false;" value="Play Daft Punk - Discovery"/>
+  <input type="button" onclick="DZ.player.playAlbum(301775); return false;" value="Play Daft Punk - Homework"/>
+  <br/>
+  <input type="button" onclick="DZ.player.playRadio(203); return false;" value="Play Radio"/>
+  <input type="button" onclick="DZ.player.playSmartRadio(13); return false;" value="Play Smart Radio"/>
+  
+  <br/>
+  <input type="button" onclick="DZ.player.play(); return false;" value="play"/>
+  <input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
+  <input type="button" onclick="DZ.player.prev(); return false;" value="prev"/>
+  <input type="button" onclick="DZ.player.next(); return false;" value="next"/>
+  <br/>
+  <input type="button" onclick="DZ.player.setVolume(20); return false;" value="set Volume 20"/>
+  <input type="button" onclick="DZ.player.setVolume(80); return false;" value="set Volume 80"/>
+  
+  <br/><br/><br/>
+</div>
+<div id="slider_seek" class="progressbarplay" style="">
+  <div class="bar" style="width: 0%;"></div>
+</div>
+<script>
+  $(document).ready(function(){
+    $("#controlers input").attr('disabled', true);
+    $("#slider_seek").click(function(evt,arg){
+      var left = evt.offsetX;
+      DZ.player.seek((evt.offsetX/$(this).width()) * 100);
+    });
+  });
+  function event_listener_append() {
+    var pre = document.getElementById('event_listener');
+    var line = [];
+    for (var i = 0; i < arguments.length; i++) {
+      line.push(arguments[i]);
+    }
+    pre.innerHTML += line.join(' ') + "\n";
+  }
+  function onPlayerLoaded() {
+    $("#controlers input").attr('disabled', false);
+    event_listener_append('player_loaded');
+    DZ.Event.subscribe('current_track', function(arg){
+      event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
+    });
+    DZ.Event.subscribe('player_position', function(arg){
+      event_listener_append('position', arg[0], arg[1]);
+      $("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
+    });
+  }
+  DZ.init({
+    appId  : '211642',
+    channelUrl : 'http://developers.deezer.com/examples/channel.php',
+    player : {
+      container : 'player',
+      cover : true,
+      playlist : true,
+      width : 650,
+      height : 300,
+      onload : onPlayerLoaded
+    }
+  });
+</script><br/>
+event_listener : <br/>
+<pre id="event_listener" style="height:100px;overflow:auto;"></pre>

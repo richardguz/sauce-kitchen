@@ -15,5 +15,7 @@ Rails.application.routes.draw do
 
   get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
 
+  get "/pages/:page" => "basic_pages#show"
+
   mount ActionCable.server => '/cable'
 end
