@@ -34,7 +34,7 @@ function initializeMap() {
   });
   
   // Try HTML5 geolocation.
-  if (false){//navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
         lat: position.coords.latitude,
@@ -61,6 +61,22 @@ function initializeMap() {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
   }
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  var address = getCookie("address")
+  if (address) {
+    generateCoordinates(address);
+    return;
+  }
+  var marker = new google.maps.Marker({
+    position: pos,
+    map: map
+  });
+  infoWindow.setPosition(pos);
+  infoWindow.setContent('The geolocation failed. Please Enter your address to see playlists near you.' +
+                          '<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
+  infoWindow.open(map, marker);
 }
 
 function addPlaylistMarkers(playlists) {
@@ -136,26 +152,20 @@ function getPlaylistUrl(p_id) {
   return baseString + "/" + (p_id + 1)
 }
 
-
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-	var marker = new google.maps.Marker({
-    position: pos,
-    map: map
-  });
-  infoWindow.setPosition(pos);
-  infoWindow.setContent('The geolocation failed. Please Enter your address to see playlists near you.' +
-                        	'<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
-	infoWindow.open(map, marker);
-}
-
-function generateCoordinates(dialog) {
-	var address = document.getElementById("address").value;
+function getAddress(dialog) {
+  var address = document.getElementById("address").value;
   var city = document.getElementById("city").value;
   var state = document.getElementById("state").value;
   var zip = document.getElementById("zip").value;
   var fullAddress = address + ", " + city + " " + state + ", " + zip
-	var geocoder = new google.maps.Geocoder();
-	var address = fullAddress;
+  var address = fullAddress;
+  setCookie("address", address, 1000);
+  dialog.dialog( "close" );
+  generateCoordinates(address);
+}
+
+function generateCoordinates(address) {
+  var geocoder = new google.maps.Geocoder();
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
     	$('#latitude').val(results[0].geometry.location.lat());
@@ -175,7 +185,6 @@ function generateCoordinates(dialog) {
       alert('Geocode was not successful for the following reason: ' + status);
     }
   });
-  dialog.dialog( "close" );
 }
 
 function openDialog() {
