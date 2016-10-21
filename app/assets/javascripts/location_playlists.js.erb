@@ -6,6 +6,7 @@ var locationIcon;
 
 var playlistMarkers = [];
 var showPlaylistMarkers = true;
+var showLocationMarkers = true;
 
 function initializeMap() {
 	infoWindow = new google.maps.InfoWindow({
@@ -107,6 +108,27 @@ function togglePlaylistMarkers() {
   {
 		playlistMarkers[i].setVisible(showPlaylistMarkers);
   }
+}
+
+function toggleLocationMarkers() {
+  var buttonTitle = document.getElementById('toggle-location');
+  var title;
+  if (showPlaylistMarkers) {
+    title = "Show Location";
+  }
+  else {
+    title = "Hide Location";
+  }
+  showLocationMarkers = !showLocationMarkers;
+  buttonTitle.innerHTML = title;
+  locationMarker.setVisible(showLocationMarkers);
+  if (showLocationMarkers) {
+    locationInfoWindow.open(map, locationMarker);
+  }
+  else {
+    locationInfoWindow.open(close);
+  }
+
 }
 
 function getPlaylistUrl(p_id) {
