@@ -34,7 +34,7 @@ function initializeMap() {
   });
   
   // Try HTML5 geolocation.
-  if (navigator.geolocation) {
+  if (false){//navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
         lat: position.coords.latitude,
@@ -162,6 +162,15 @@ function generateCoordinates(dialog) {
       $('#longitude').val(results[0].geometry.location.lng());
       map.setCenter(results[0].geometry.location);
       locationMarker.setPosition(results[0].geometry.location);
+      locationInfoWindow.setPosition(results[0].geometry.location);
+      locationInfoWindow.setContent('<div class="title">' +
+                        '<h2>Your Current Location</h2>' +
+                        '</div>' +
+                        '<div class="notLocation">' +
+                        'Not your location? You can enter your address here to get more accurate results.' +
+                        '</div>' +
+                        '<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
+      locationInfoWindow.open(map, locationMarker);
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
     }
