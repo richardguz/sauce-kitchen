@@ -34,7 +34,7 @@ function initializeMap() {
   });
   
   // Try HTML5 geolocation.
-  if (false){//navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
         lat: position.coords.latitude,
