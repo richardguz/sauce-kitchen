@@ -143,9 +143,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     map: map
   });
   infoWindow.setPosition(pos);
-  infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed.' :
-                        'Error: Your browser doesn\'t support geolocation. Please Enter your address to see playlists near you.' +
+  infoWindow.setContent('The geolocation failed. Please Enter your address to see playlists near you.' +
                         	'<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
 	infoWindow.open(map, marker);
 }
