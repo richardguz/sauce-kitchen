@@ -51,6 +51,20 @@ class PlaylistsController < ApplicationController
     render :json => data
   end
 
+  def next_song
+    playlist = Playlist.find_by(id: params[:id])
+    song = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last.song : nil
+    #if (!song)
+    #  song = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last.song
+    #end
+    #psong = playlist.psongs.where(song_id: song.id)
+    #puts "yo"
+    #puts psong
+    #puts "yo"
+    #psong.update_column(:played, true)
+    render :json => song
+  end
+
   private
   	def playlist_params
       params.require(:playlist).permit(:title, :songs, :longitude, :latitude, :private)

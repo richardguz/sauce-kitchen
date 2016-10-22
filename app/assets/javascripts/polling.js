@@ -99,6 +99,6 @@ function handleWaiting(song, psong){
 
 function appendToSongsList(song, psong, listId){
 	$('#' + listId).append(
-					'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.title + ': ' + psong.upvotes + '</ul>');
+					'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + ': ' + psong.upvotes + '</ul>');
 }
 

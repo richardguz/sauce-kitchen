@@ -13,14 +13,14 @@ playlist = Playlist.create!(title: "testPlaylist",
                 user_id: 1)
 
 5.times do |n|
-  song = playlist.songs.create(title: "queued-song#{n}")
+  song = playlist.songs.create(name: "queued-song#{n}", url: "/music/return_of_simba-jcole.mp3")
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, true)
   psong.update_column(:upvotes, Random.rand(15))
 end
 
 5.times do |n|
-  song = playlist.songs.create(title: "waiting-song#{n}")
+  song = playlist.songs.create(name: "waiting-song#{n}", url: "/music/return_of_simba-jcole.mp3")
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, false)
   psong.update_column(:upvotes, Random.rand(15))
