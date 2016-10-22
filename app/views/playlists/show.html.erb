@@ -9,7 +9,7 @@
 <div id="queuedSongs">
 	<ul id="queuedSongsList">
 		<% @playlist.psongs.each do |psong| %>
-			<% if psong.queued %>
+			<% if psong.queued && !psong.played %>
 				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
 			<% end %>
 		<% end %>
@@ -19,7 +19,7 @@
 <div id="waitingSongs">
 	<ul id="waitingSongsList">
 		<% @playlist.psongs.each do |psong| %>
-			<% if !psong.queued %>
+			<% if !psong.queued && !psong.played %>
 				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
 			<% end %>
 		<% end %>

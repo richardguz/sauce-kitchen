@@ -40,36 +40,25 @@ function sortByUpvotes(listElementId){
 	list.append(orderedList);
 }
 
-function updateSongQueue(song, psong, listId){
-	if ($('#' + listId + ' li[songid=' + song.id + ']').length == 0){
-				appendToSongsList(song, psong, listId);
-	}
-	else{
-		//remove the <li> if the upvotes are not accurate, and reappend updated version
-		displayedUpvotes = $('#' + listId + ' li[songid=' + song.id + ']').attr('upvotes');
-		if (displayedUpvotes != psong.upvotes){
-			$('#' + listId + ' li[songid=' + song.id + ']').remove();
-			appendToSongsList(song, psong, listId);
-		}
-
-	}
-}
-
 function handleQueued(song, psong){
 	//checks if it's in list passed in
-	if ($('#queuedSongsList li[songid=' + song.id + ']').length > 0){
+	if (inSongsList(song, "queuedSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#queuedSongsList li[songid=' + song.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.upvotes){
-			$('#queuedSongsList li[songid=' + song.id + ']').remove();
+			removeFromSongsList(song, "queuedSongsList");
 			appendToSongsList(song, psong, "queuedSongsList");
+		}
+		else{
+			if(psong.played)
+				removeFromSongsList(song, "queuedSongsList");
 		}
 	}
 	else{
 		//check if in waiting instead
-		if ($('#waitingSongsList li[songid=' + song.id + ']').length > 0){
+		if (inSongsList(song, "waitingSongsList")){
 			//if in waiting, remove
-			$('#waitingSongsList li[songid=' + song.id + ']').remove();
+			removeFromSongsList(song, "waitingSongsList");
 		}
 		//add to queued b/c it currently isn't there
 		appendToSongsList(song, psong, "queuedSongsList");
@@ -77,20 +66,24 @@ function handleQueued(song, psong){
 }
 
 function handleWaiting(song, psong){
-	//checks if it's in list passed in
-	if ($('#waitingSongsList li[songid=' + song.id + ']').length > 0){
+	//checks if it's in waiting list
+	if (inSongsList(song, "waitingSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#waitingSongsList li[songid=' + song.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.upvotes){
-			$('#waitingSongsList li[songid=' + song.id + ']').remove();
+			removeFromSongsList(song, "waitingSongsList");
 			appendToSongsList(song, psong, "waitingSongsList");
+		}
+		else{
+			if(psong.played)
+				removeFromSongsList(song, "waitingSongsList");
 		}
 	}
 	else{
 		//check if in queued instead
-		if ($('#queuedSongsList li[songid=' + song.id + ']').length > 0){
+		if (inSongsList(song, "queuedSongsList")){
 			//if in queued, remove
-			$('#queuedSongsList li[songid=' + song.id + ']').remove();
+			removeFromSongsList(song, "queuedSongsList");
 		}
 		//add to waiting b/c it currently isn't there
 		appendToSongsList(song, psong, "waitingSongsList");
@@ -98,7 +91,24 @@ function handleWaiting(song, psong){
 }
 
 function appendToSongsList(song, psong, listId){
-	$('#' + listId).append(
-					'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + ': ' + psong.upvotes + '</ul>');
+	if (!songPlayed(psong))
+		$('#' + listId).append(
+				'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + ': ' + psong.upvotes + '</ul>');
 }
+
+function removeFromSongsList(song, listId){
+	$('#' + listId + ' li[songid=' + song.id + ']').remove();
+}
+
+function songPlayed(psong){
+	return psong.played;
+}
+
+function inSongsList(song, listId){
+	if ($('#' + listId + ' li[songid=' + song.id + ']').length > 0)
+		return true;
+	else
+		return false;
+}
+
 
