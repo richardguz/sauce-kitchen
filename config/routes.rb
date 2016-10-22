@@ -12,8 +12,8 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   get '/show_playlists', to: 'location_playlists#show'
-
   get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
+  get '/playlists/json/:id', to: 'playlists#poll', as: 'playlist_json'
 
   mount ActionCable.server => '/cable'
 end

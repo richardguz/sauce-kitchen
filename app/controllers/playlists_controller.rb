@@ -41,11 +41,13 @@ class PlaylistsController < ApplicationController
     @playlist = Playlist.find_by(id: params[:id])
     @playlist.title = params[:playlist][:title]
     @playlist.save
-    puts "ENTERING"
-    puts current_user.id 
-    puts session[:user_id]
-    puts "EXITING"
     redirect_to @playlist
+  end
+
+  def poll
+    playlist = Playlist.find_by(id: params[:id])
+    data = playlist ? {:title => playlist.title, :owner => playlist.user.id} : nil
+    render :json => data
   end
 
   private
