@@ -21,15 +21,19 @@ class UsersController < ApplicationController
     end
 	end
 
-  # def update
-  #   @user = User.find(params[:id])
-  #   if @user.update_attributes(avatar: params[:avatar])
-  #     flash[:notice] = 'Upload was successfully updated'
-  #     redirect_to @user
-  #   else
-  #     redirect_to @user
-  #   end
-  # end
+  def update
+    @user = User.find(params[:id])
+    puts "hello"
+    puts user_params[:avatar]
+    puts "hello"
+    puts params[:user][:avatar]
+    if @user.update_attributes(avatar: user_params[:avatar])
+      flash[:success] = 'Profile pic was successfully changed'
+      redirect_to @user
+    else
+      redirect_to @user
+    end
+  end
 
   private
   	def user_params

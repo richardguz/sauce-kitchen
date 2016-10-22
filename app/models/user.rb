@@ -7,7 +7,7 @@ class User < ApplicationRecord
 	validates :username, presence: true, uniqueness: true, length: {maximum: 30}
 	validates :email, presence: true, uniqueness: {case_sensitive: false}, length: {maximum: 255},
 										format: {with: EMAIL_REGEX}
-	validates :password, presence: true, length: {minimum: 6}
+	validates :password, presence: true, length: {minimum: 6}, :if => :password_digest_changed?
 	#for BCRYPT gem:
 	has_secure_password
 	has_many :playlists
@@ -17,11 +17,11 @@ class User < ApplicationRecord
 	end
 
 	class << self
-    # Returns the hash digest of the given string.
-    def digest(string)
-      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+    	# Returns the hash digest of the given string.
+    	def digest(string)
+      		cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                                                     BCrypt::Engine.cost
-      BCrypt::Password.create(string, cost: cost)
-    end
-  end
+      		BCrypt::Password.create(string, cost: cost)
+    	end
+  	end
 end
