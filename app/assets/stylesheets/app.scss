@@ -1,25 +1,55 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-
 @mixin box_sizing {
   -moz-box-sizing:    border-box;
   -webkit-box-sizing: border-box;
   box-sizing:         border-box;
 }
 
+.alert {
+  margin-bottom: 0px;
+}
+
 body {
   padding-top: 60px;
 }
 
+.intro {
+  position: relative;
+  max-width: 100%;
+}
+
+.introcontent {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 100%;
+}
+
+.saucinlogo {
+  position: absolute;
+  top: 88%;
+  left: 0;
+  width: 100%;
+}
+
 .center {
   text-align: center;
+  padding: 0px;
   h1 {
     margin-bottom: 10px;
+  }
+  .alreadylogged {
+    font-size: small;
   }
 }
 
 /* header */
+
+.container {
+  border-bottom: 100px;
+}
 
 /*#logo {
   float: left;
