@@ -15,6 +15,4 @@ Rails.application.routes.draw do
   get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
   get '/playlists/json/:id', to: 'playlists#poll', as: 'playlist_json'
   get '/playlists/:id/next_song/json', to: 'playlists#next_song', as: 'next_song_json'
-
-  mount ActionCable.server => '/cable'
 end
