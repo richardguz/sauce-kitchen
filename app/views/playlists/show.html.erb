@@ -5,3 +5,14 @@
 		<h1 id="title" class="nds"><%= @playlist.title %></h1>
 	<% end %>
 </div>
+
+<script type="text/javascript">
+	var pathArr = window.location.pathname.split('/');
+	var id = pathArr[pathArr.length - 1];
+	var uid = "<%= session[:user_id] %>"
+	console.log(uid);
+
+	window.setInterval(function(){
+  		pollPlaylist(id,uid);
+}, 5000);
+</script>
