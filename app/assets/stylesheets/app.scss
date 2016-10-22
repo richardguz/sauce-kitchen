@@ -21,7 +21,7 @@ body {
 
 /* header */
 
-#logo {
+/*#logo {
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
@@ -34,8 +34,13 @@ body {
     color: #aaa;
     text-decoration: none;
   }
-}
+}*/
 
+#logo {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  float: left;
+}
 /* forms */
 
 .checkbox {
