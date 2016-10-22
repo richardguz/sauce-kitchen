@@ -2,10 +2,10 @@
 	<div class="col-md-6 col-md-offset-3">
 		<h1><%= @user.username %></h1>
 		<%= image_tag @user.avatar.url(:medium) %>
-<!-- 		<%= form_for @user, html: { multipart: true } do |f| %>
+ 		<%= form_for @user, html: { multipart: true } do |f| %>
 			<%= f.file_field :avatar %>
 			<%= f.submit "Change Profile Pic", class: "btn btn-primary" %>
-		<% end %> -->
+		<% end %>
 		<br>
 	</div>
 </div>
