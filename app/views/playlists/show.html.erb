@@ -6,20 +6,37 @@
 	<% end %>
 </div>
 
-<div id="songDiv">
-	<ul id="songList">
-		<% @playlist.songs.each do |song| %>
-			<li songid="<%=song.id%>"><%= song.title %></li>
+<div id="queuedSongs">
+	<ul id="queuedSongsList">
+		<% @playlist.psongs.each do |psong| %>
+			<% if psong.queued %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.title %>: <%= psong.upvotes %></li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>
+
+<div id="waitingSongs">
+	<ul id="waitingSongsList">
+		<% @playlist.psongs.each do |psong| %>
+			<% if !psong.queued %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.title %>: <%= psong.upvotes %></li>
+			<% end %>
 		<% end %>
 	</ul>
 </div>
 
 <script type="text/javascript">
+	//grab the user id to validate user
 	var pathArr = window.location.pathname.split('/');
 	var id = pathArr[pathArr.length - 1];
 	var uid = "<%= session[:user_id] %>"
-	console.log(uid);
 
+	//initial sort
+	sortByUpvotes('queuedSongsList');
+	sortByUpvotes('waitingSongsList');
+
+	//initialize polling for playlist updates
 	window.setInterval(function(){
   		pollPlaylist(id,uid);
 }, 5000);
