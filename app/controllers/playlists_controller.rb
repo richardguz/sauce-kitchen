@@ -53,16 +53,20 @@ class PlaylistsController < ApplicationController
 
   def next_song
     playlist = Playlist.find_by(id: params[:id])
-    song = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last.song : nil
-    #if (!song)
-    #  song = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last.song
-    #end
-    #psong = playlist.psongs.where(song_id: song.id)
-    #puts "yo"
-    #puts psong
-    #puts "yo"
-    #psong.update_column(:played, true)
-    render :json => song
+    #check for songs on queued list (grabs one with most upvotes)
+    psong = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last : nil
+    if (!psong)
+      #if no songs left on the queue
+      psong = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last
+    end
+    if (!psong)
+      #if no songs in waiting queue
+      render :json => nil 
+    else
+      #if song found on a queue
+      psong.update(played: true)
+      render :json => psong.song
+    end
   end
 
   private
