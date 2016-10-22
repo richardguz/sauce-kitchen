@@ -6,6 +6,14 @@
 	<% end %>
 </div>
 
+<div id="songDiv">
+	<ul id="songList">
+		<% @playlist.songs.each do |song| %>
+			<li songid="<%=song.id%>"><%= song.title %></li>
+		<% end %>
+	</ul>
+</div>
+
 <script type="text/javascript">
 	var pathArr = window.location.pathname.split('/');
 	var id = pathArr[pathArr.length - 1];

@@ -16,8 +16,6 @@ class PlaylistsController < ApplicationController
   def show_user_playlists
     @playlists = Playlist.where(user_id: params[:id])
     @user = User.find_by(id: params[:id])
-    puts "YOOOO"
-    puts @playlists
     render 'playlists/user_playlists'
   end
 
@@ -46,7 +44,10 @@ class PlaylistsController < ApplicationController
 
   def poll
     playlist = Playlist.find_by(id: params[:id])
-    data = playlist ? {:title => playlist.title, :owner => playlist.user.id} : nil
+    data = playlist ? { :title => playlist.title, 
+                        :owner => playlist.user.id, 
+                        :psongs => playlist.psongs, 
+                        :songs => playlist.songs} : nil
     render :json => data
   end
 
