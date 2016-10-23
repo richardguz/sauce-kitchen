@@ -71,6 +71,43 @@
       onload : onPlayerLoaded
     }
   });
-</script><br/>
-event_listener : <br/>
+</script>
+<br/>
+event_listener : 
+<br/>
 <pre id="event_listener" style="height:100px;overflow:auto;"></pre>
+
+<div id="queuedSongs">
+	<ul id="queuedSongsList">
+		<% @playlist.psongs.each do |psong| %>
+			<% if psong.queued && !psong.played %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>
+
+<div id="waitingSongs">
+	<ul id="waitingSongsList">
+		<% @playlist.psongs.each do |psong| %>
+			<% if !psong.queued && !psong.played %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	//grab the user id to validate user
+	var id = "<%= @playlist.id %>";
+	var uid = "<%= session[:user_id] %>"
+
+	//initial sort
+	sortByUpvotes('queuedSongsList');
+	sortByUpvotes('waitingSongsList');
+
+	//initialize polling for playlist updates
+	window.setInterval(function(){
+  		pollPlaylist(id,uid);
+}, 5000);
+</script>

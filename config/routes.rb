@@ -12,10 +12,12 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   get '/show_playlists', to: 'location_playlists#show'
-
   get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
+
 
   get "/pages/channel" => "basic_pages#show"
 
-  mount ActionCable.server => '/cable'
+  get '/playlists/json/:id', to: 'playlists#poll', as: 'playlist_json'
+  get '/playlists/:id/next_song/json', to: 'playlists#next_song', as: 'next_song_json'
+
 end
