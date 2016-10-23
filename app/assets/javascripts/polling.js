@@ -5,11 +5,14 @@ function pollPlaylist(pid, uid){
 		var psongs = playlist.psongs;
 
 		//updates the title
-		//updates to any other additional general info would go here too
-		if (uid == playlist['owner'].toString())
-			$('#title span').text(playlist['title']);
-		else
-			$('#title').text(playlist['title']);
+		//updates to any other additional general info would go here too (with dynaspan)
+		//if (uid == playlist['owner'].toString())
+		//	$('#title span').text(playlist['title']);
+		//else
+		//	$('#title').text(playlist['title']);
+
+		//to replace the dynaspan functionality
+		$('#title').text(playlist['title']);
 
 		//updates the songs and how they're displayed
 		for (j = 0; j < songs.length; j++){

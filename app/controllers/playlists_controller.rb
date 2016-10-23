@@ -78,6 +78,20 @@ class PlaylistsController < ApplicationController
 
   end
 
+  def reset_play_history
+    if (playlist = Playlist.find_by(id: params[:id]))
+      if (isOwner(current_user, playlist))
+        #reset each psong played value to false
+        playlist.psongs.update_all(played: false)
+      else
+        redirect_to playlist
+      end
+    else 
+      redirect_to root_url 
+    end
+
+  end
+
   private
   	def playlist_params
       params.require(:playlist).permit(:title, :songs, :longitude, :latitude, :private)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161022211254) do
+ActiveRecord::Schema.define(version: 20161023045215) do
 
   create_table "playlists", force: :cascade do |t|
     t.string   "title"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20161022211254) do
     t.string   "url"
     t.string   "album"
     t.string   "cover_art_url"
+    t.integer  "deezer_id"
   end
 
   create_table "users", force: :cascade do |t|
