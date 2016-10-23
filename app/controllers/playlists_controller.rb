@@ -52,25 +52,28 @@ class PlaylistsController < ApplicationController
   end
 
   def next_song
-    playlist = Playlist.find_by(id: params[:id])
-    #check if the requester is owner of playlist
-    if (isOwner(current_user, playlist))
-      #check for songs on queued list (grabs one with most upvotes)
-      psong = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last : nil
-      if (!psong)
-        #if no songs left on the queue
-        psong = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last
-      end
-      if (!psong)
-        #if no songs in waiting queue
-        render :json => nil 
+    if (playlist = Playlist.find_by(id: params[:id]))
+      #check if the requester is owner of playlist
+      if (isOwner(current_user, playlist))
+        #check for songs on queued list (grabs one with most upvotes)
+        psong = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last : nil
+        if (!psong)
+          #if no songs left on the queue
+          psong = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last
+        end
+        if (!psong)
+          #if no songs in waiting queue
+          render :json => nil 
+        else
+          #if song found on a queue
+          psong.update(played: true)
+          render :json => psong.song
+        end
       else
-        #if song found on a queue
-        psong.update(played: true)
-        render :json => psong.song
+        redirect_to playlist
       end
     else
-      redirect_to playlist
+      redirect_to root_url
     end
 
   end
