@@ -96,7 +96,9 @@ class PlaylistsController < ApplicationController
     #does playlist exist?
     if (playlist = Playlist.find_by(id: params[:id]))
       psong = Psong.find_by(song_id: params[:songid], playlist_id: params[:id])
-      psong.update(upvotes: 1 + psong.upvotes)
+      if (psong.votes.create(user_id: current_user.id))
+        psong.update(upvotes: 1 + psong.upvotes)
+      end
     else 
       redirect_to root_url 
     end

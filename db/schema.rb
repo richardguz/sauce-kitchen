@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161023045215) do
+ActiveRecord::Schema.define(version: 20161023202925) do
 
   create_table "playlists", force: :cascade do |t|
     t.string   "title"
@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(version: 20161023045215) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
+  end
+
+  create_table "votes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.integer  "psong_id"
   end
 
 end
