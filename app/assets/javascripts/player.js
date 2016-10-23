@@ -9,7 +9,13 @@ function resetPlaylist(pid){
 }
 
 function searchDeezer(searchString){
-	$.get("https://api.deezer.com/search?q=" + searchString, function(songs){
-		console.log(songs);
+	$.ajax({
+    url: "https://api.deezer.com/search?q=" + searchString + "&callback=?",
+    dataType: 'json',
+    jsonpCallback: 'callback',
+    type: 'GET',
+    success: function (data) {
+        console.log(data);
+    }
 	});
 }
