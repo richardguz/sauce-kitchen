@@ -10,12 +10,34 @@ function resetPlaylist(pid){
 
 function searchDeezer(searchString){
 	$.ajax({
-    url: "https://api.deezer.com/search?q=" + searchString + "&callback=?",
-    dataType: 'json',
-    jsonpCallback: 'callback',
+    url: "https://api.deezer.com/search?q=" + searchString + "&output=jsonp" + "&callback=?",
+    dataType: 'jsonp',
     type: 'GET',
     success: function (data) {
         console.log(data);
+        displaySearchResults(data);
     }
 	});
+}
+
+function displaySearchResults(searchResults){
+	$("#songSearchResults").empty();
+	$("#songSearchResults").append("<li song_id=" + searchResults.data[0].id + " title=" + searchResults.data[0].title + ">" + searchResults.data[0].title + " - " + searchResults.data[0].artist.name + "<button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></li>");
+}
+
+function addSongToWaiting(element){
+	var song_id = $(element).parent().attr('song_id');
+	var title = $(element).parent().attr('title');
+
+	//make request to update in db
+	$.get("/playlists/" + getPlaylistId() + "/add_song/" + song_id + "/" + title, function(){
+		console.log("request to add song successful");
+		//update locally TODO
+	});
+}
+
+function getPlaylistId(){
+	var path = window.location.pathname;
+	var pid = path.split('/')[2];
+	return pid;
 }

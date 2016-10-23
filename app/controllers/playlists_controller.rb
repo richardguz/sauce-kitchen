@@ -104,6 +104,14 @@ class PlaylistsController < ApplicationController
     end
   end
 
+  def add_song
+    song_id = params[:sid]
+    playlist_id = params[:pid]
+    title = params[:title]
+    playlist = Playlist.find(playlist_id)
+    playlist.songs.create(name: title, deezer_id: song_id)
+  end
+
   private
   	def playlist_params
       params.require(:playlist).permit(:title, :songs, :longitude, :latitude, :private)

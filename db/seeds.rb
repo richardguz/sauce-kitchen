@@ -12,15 +12,16 @@ User.create!(username: "testuser1", email: "testuser1@gmail.com",
 playlist = Playlist.create!(title: "testPlaylist",
                 user_id: 1)
 
+possibleSongs = [132201186]
 5.times do |n|
-  song = playlist.songs.create(name: "queued-song#{n}", deezer_id: 132201186)
+  song = playlist.songs.create(name: "queued-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size)])
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, true)
   psong.update_column(:upvotes, Random.rand(15))
 end
 
 5.times do |n|
-  song = playlist.songs.create(name: "waiting-song#{n}", deezer_id: 132201186)
+  song = playlist.songs.create(name: "waiting-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size)])
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, false)
   psong.update_column(:upvotes, Random.rand(15))
