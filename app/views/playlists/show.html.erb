@@ -38,7 +38,11 @@
 	<ul id="queuedSongsList">
 		<% @playlist.psongs.each do |psong| %>
 			<% if psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
+					<button onclick="upvoteClick(this);" class="upvote-icon">
+            <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+        	</button>
+				</li>
 			<% end %>
 		<% end %>
 	</ul>
@@ -48,12 +52,17 @@
 	<ul id="waitingSongsList">
 		<% @playlist.psongs.each do |psong| %>
 			<% if !psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>: <%= psong.upvotes %></li>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
+					<button onclick="upvoteClick(this);" class="upvote-icon">
+            <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+        	</button>
+				</li>
 			<% end %>
 		<% end %>
-		<li><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSongModal">Suggest Song</button></li>
 	</ul>
 </div>
+
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSongModal">Suggest Song</button>
 
 <script type="text/javascript">
 //player init
@@ -90,6 +99,19 @@
       onload : onPlayerLoaded
     }
   });
+
+  //adding listeners for upvote clicks
+  function upvoteClick(element){
+  	var upvotes = parseInt($(element).parent().attr("upvotes"));
+  	var songid = $(element).parent().attr("songid");
+  	upvotes += 1;
+  	console.log(upvotes);
+  	$(element).parent().attr("upvotes", upvotes);
+  	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
+  	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + songid, function(){
+  		console.log("request succesful");
+  	});
+  }
 
   //queueing/waiting list logic
 	//grab the user id to validate user

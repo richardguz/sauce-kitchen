@@ -20,5 +20,6 @@ Rails.application.routes.draw do
   get '/playlists/json/:id', to: 'playlists#poll', as: 'playlist_json'
   get '/playlists/:id/next_song/json', to: 'playlists#next_song', as: 'next_song_json'
   get '/playlists/:id/reset_play_history', to: 'playlists#reset_play_history'
+  get '/playlists/:id/upvote/:songid', to: 'playlists#upvote'
 
 end

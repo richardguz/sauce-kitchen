@@ -96,7 +96,7 @@ function handleWaiting(song, psong){
 function appendToSongsList(song, psong, listId){
 	if (!songPlayed(psong))
 		$('#' + listId).append(
-				'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + ': ' + psong.upvotes + '</ul>');
+				'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.upvotes + "</span></button>");
 }
 
 function removeFromSongsList(song, listId){
@@ -113,5 +113,6 @@ function inSongsList(song, listId){
 	else
 		return false;
 }
+
 
 

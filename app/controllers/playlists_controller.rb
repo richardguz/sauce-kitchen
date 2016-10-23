@@ -92,6 +92,16 @@ class PlaylistsController < ApplicationController
 
   end
 
+  def upvote
+    #does playlist exist?
+    if (playlist = Playlist.find_by(id: params[:id]))
+      psong = Psong.find_by(song_id: params[:songid], playlist_id: params[:id])
+      psong.update(upvotes: 1 + psong.upvotes)
+    else 
+      redirect_to root_url 
+    end
+  end
+
   private
   	def playlist_params
       params.require(:playlist).permit(:title, :songs, :longitude, :latitude, :private)
