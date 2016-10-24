@@ -109,7 +109,9 @@ class PlaylistsController < ApplicationController
     playlist_id = params[:pid]
     title = params[:title]
     playlist = Playlist.find(playlist_id)
-    playlist.songs.create(name: title, deezer_id: song_id)
+    song = playlist.songs.create(name: title, deezer_id: song_id)
+    psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
+    psong.update_column(:queued, false)
   end
 
   private
