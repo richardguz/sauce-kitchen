@@ -4,7 +4,14 @@
   <% else %>
   <h1 id="title" class="nds"><%= @playlist.title %></h1>
   <% end %>
-</div>
+
+  <% if @isLiked %>
+    <%= image_tag "redheart.png", id: "heart" %>
+  <% else %>
+    <%= image_tag "clearheart.png", id: "heart" %>
+  <% end %>
+  <div id="nlikes"><%= @likes %> likes</div>
+  <!-- <p><%= Like.where(playlist_id: @playlist.id).count %> likes</p> -->
 
 <div id="dz-root"></div>
 <div id="player" style="width:100%;" align="center"></div>
@@ -39,6 +46,11 @@
       var left = evt.offsetX;
       DZ.player.seek((evt.offsetX/$(this).width()) * 100);
     });
+
+    $("#heart").click(function(){
+      console.log("Heart clicked");
+      clickHeart(<%= @playlist.id %>);
+    });    
   });
   function event_listener_append() {
     var pre = document.getElementById('event_listener');
@@ -98,6 +110,8 @@ event_listener :
 </div>
 
 <script type="text/javascript">
+  // changeHeart(<%= @isLiked %>);
+
 	//grab the user id to validate user
 	var id = "<%= @playlist.id %>";
 	var uid = "<%= session[:user_id] %>"

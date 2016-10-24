@@ -11,6 +11,8 @@ class User < ApplicationRecord
 	#for BCRYPT gem:
 	has_secure_password
 	has_many :playlists
+	has_many :likes, :foreign_key => "user_id"
+	has_many :playlists_liked, :through => :likes, :source => :playlist
 
 	def password_auth?(password)
 		BCrypt::Password.new(self.password_digest).is_password?(password)

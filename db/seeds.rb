@@ -6,11 +6,23 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.create!(username: "testuser1", email: "testuser1@gmail.com", 
-						password: "password", password_confirmation: "password")
+5.times do |n|
+  User.create!(username: "testuser#{n}", email: "testuser#{n}@gmail.com", 
+  						password: "password", password_confirmation: "password")
+end
 
-playlist = Playlist.create!(title: "testPlaylist",
+playlist = Playlist.create!(title: "testPlaylist1",
                 user_id: 1)
+Playlist.create!(title: "testPlaylist2",
+                user_id: 1)
+
+Like.create!(user_id: 1, playlist_id: 1)
+Like.create!(user_id: 1, playlist_id: 2)
+Like.create!(user_id: 2, playlist_id: 1)
+Like.create!(user_id: 2, playlist_id: 2)
+Like.create!(user_id: 3, playlist_id: 1)
+Like.create!(user_id: 4, playlist_id: 1)
+Like.create!(user_id: 5, playlist_id: 1)
 
 5.times do |n|
   song = playlist.songs.create(name: "queued-song#{n}", url: "/music/return_of_simba-jcole.mp3")

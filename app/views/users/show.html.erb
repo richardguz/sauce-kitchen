@@ -6,6 +6,10 @@
 			<%= f.file_field :avatar %>
 			<%= f.submit "Change Profile Pic", class: "btn btn-primary" %>
 		<% end %>
+
+		<% @user.playlists_liked.each do |playlist| %>
+			<%= playlist.title %>
+		<% end %>
 		<br>
 	</div>
 </div>
