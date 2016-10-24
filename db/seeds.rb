@@ -24,16 +24,16 @@ Like.create!(user_id: 3, playlist_id: 1)
 Like.create!(user_id: 4, playlist_id: 1)
 Like.create!(user_id: 5, playlist_id: 1)
 
-possibleSongs = [132201186]
+possibleSongs = [132201186, 133193052, 98744588, 106713882, 123210948, 132201188,  132201196, 65723693, 107418050, 70018666, 120863156]
 5.times do |n|
-  song = playlist.songs.create(name: "queued-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size)])
+  song = playlist.songs.create(name: "queued-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size-1)])
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, true)
   psong.update_column(:upvotes, Random.rand(15))
 end
 
 5.times do |n|
-  song = playlist.songs.create(name: "waiting-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size)])
+  song = playlist.songs.create(name: "waiting-song#{n}", deezer_id: possibleSongs[Random.rand(possibleSongs.size-1)])
   psong = Psong.find_by(song_id: song.id, playlist_id: playlist.id)
   psong.update_column(:queued, false)
   psong.update_column(:upvotes, Random.rand(15))
