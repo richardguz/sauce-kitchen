@@ -1,0 +1,6 @@
+<h1 class="center"><%= @user.username %>'s Liked Playlists</h1>
+<ul>
+	<% @user.playlists_liked.each do |playlist| %>
+		<li> <%=link_to playlist.title, playlist %> </li>
+	<% end %>
+</ul>

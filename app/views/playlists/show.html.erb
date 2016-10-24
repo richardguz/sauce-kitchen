@@ -1,5 +1,11 @@
 <div class="center">
   <h1 id="title" class="nds"><%= @playlist.title %></h1>
+  <% if @isLiked %>
+    <%= image_tag "redheart.png", id: "heart" %>
+  <% else %>
+    <%= image_tag "clearheart.png", id: "heart" %>
+  <% end %>
+  <div id="nlikes"><%= @likes %> likes</div>
   <button id="activate" class="btn btn-success">Activate Playlist</button>
 	<button id="reset" class="btn btn-danger hidden">Deactivate Playlist</button>
 </div>
@@ -35,6 +41,15 @@
 
   </div>
 </div>
+
+<script>
+  $(document).ready(function(){
+    $("#heart").click(function(){
+      console.log("Heart clicked");
+      clickHeart(<%= @playlist.id %>);
+    });    
+  });
+</script>
 
 <div id="queuedSongs" style="padding-top:10px;">
 	<ul id="queuedSongsList">

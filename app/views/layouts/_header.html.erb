@@ -16,6 +16,8 @@
                 <li><%= link_to "Near Me", show_playlists_path %></li>
                 <li class="divider"></li>
                 <li><%= link_to "My Playlists", user_playlists_path(session[:user_id]) %></li>
+                <li class="divider"></li>
+                <li><%= link_to "My Likes", liked_playlists_path(session[:user_id]) %></li>
               </ul>
             </li>
             <li class="dropdown">

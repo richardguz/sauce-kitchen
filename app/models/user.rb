@@ -12,7 +12,9 @@ class User < ApplicationRecord
 	has_secure_password
 	has_many :playlists
 	has_many :votes, dependent: :destroy
-  has_many :upvoted_psongs, through: :votes, source: :psong
+  	has_many :upvoted_psongs, through: :votes, source: :psong
+	has_many :likes, :foreign_key => "user_id"
+	has_many :playlists_liked, :through => :likes, :source => :playlist
 
 	def password_auth?(password)
 		BCrypt::Password.new(self.password_digest).is_password?(password)

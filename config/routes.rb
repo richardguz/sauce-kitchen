@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
   get '/show_playlists', to: 'location_playlists#show'
   get '/user/:id/playlists', to: 'playlists#show_user_playlists', as: 'user_playlists'
+  get '/user/:id/liked_playlists', to: 'playlists#show_liked_playlists', as: 'liked_playlists'
+  get '/playlists/:id/like', to: 'playlists#like'
 
 
   get "/pages/channel" => "basic_pages#show"

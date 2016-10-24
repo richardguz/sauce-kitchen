@@ -1,6 +1,15 @@
 class PlaylistsController < ApplicationController
   def show
   	if (@playlist = Playlist.find_by(id: params[:id]))
+      @likes = Like.where(:playlist_id => params[:id]).count
+      @isLiked = false
+      if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
+        @isLiked = true
+      end
+      puts "eyyy"
+      puts Like.where(user_id: session[:user_id], playlist_id: params[:id])
+      puts "LIKES"
+      puts @likes
       @user = current_user
       @playlist_owner = @playlist.user
       if @playlist.private && @user != @playlist_owner
@@ -17,6 +26,11 @@ class PlaylistsController < ApplicationController
     @playlists = Playlist.where(user_id: params[:id])
     @user = User.find_by(id: params[:id])
     render 'playlists/user_playlists'
+  end
+
+  def show_liked_playlists
+    @user = User.find_by(id: params[:id])
+    render 'playlists/user_likes'
   end
 
   def new
@@ -112,6 +126,31 @@ class PlaylistsController < ApplicationController
     song = playlist.songs.create(name: title, deezer_id: song_id)
     psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
     psong.update_column(:queued, false)
+  end
+
+  def like
+    if (@playlist = Playlist.find_by(id: params[:id]))
+      if (like_instance = Like.where(playlist_id: params[:id], user_id: session[:user_id])[0])
+        like_instance.destroy
+        n_likes = Like.where(:playlist_id => params[:id]).count
+        ret = {
+          :url => '/assets/clearheart.png',
+          :n_likes => n_likes
+        }
+        render :json => ret
+      else
+        Like.create(user_id: session[:user_id], playlist_id: params[:id])
+        n_likes = Like.where(:playlist_id => params[:id]).count
+        ret = {
+          :url => '/assets/redheart.png',
+          :n_likes => n_likes
+        }
+        render :json => ret
+      end
+    else
+      flash[:warning] = "The playlist you tried to like no longer exists"
+      redirect_to root_url
+    end
   end
 
   private
