@@ -11,18 +11,21 @@
   						password: "password", password_confirmation: "password")
 end
 
-playlist = Playlist.create!(title: "testPlaylist1",
-                user_id: 1)
-Playlist.create!(title: "testPlaylist2",
-                user_id: 1)
+user = User.create!(username: "testuser6", email: "testuser6@gmail.com", 
+              password: "password", password_confirmation: "password")
 
-Like.create!(user_id: 1, playlist_id: 1)
-Like.create!(user_id: 1, playlist_id: 2)
-Like.create!(user_id: 2, playlist_id: 1)
-Like.create!(user_id: 2, playlist_id: 2)
-Like.create!(user_id: 3, playlist_id: 1)
-Like.create!(user_id: 4, playlist_id: 1)
-Like.create!(user_id: 5, playlist_id: 1)
+playlist = Playlist.create!(title: "testPlaylist1",
+                user_id: user.id)
+Playlist.create!(title: "testPlaylist2",
+                user_id: user.id)
+
+Like.create!(user_id: 1, playlist_id: playlist.id)
+Like.create!(user_id: 1, playlist_id: playlist.id)
+Like.create!(user_id: 2, playlist_id: playlist.id)
+Like.create!(user_id: 2, playlist_id: playlist.id)
+Like.create!(user_id: 3, playlist_id: playlist.id)
+Like.create!(user_id: 4, playlist_id: playlist.id)
+Like.create!(user_id: 5, playlist_id: playlist.id)
 
 possibleSongs = [132201186, 133193052, 98744588, 106713882, 123210948, 132201188,  132201196, 65723693, 107418050, 70018666, 120863156]
 5.times do |n|
@@ -40,12 +43,12 @@ end
 end
   
 
-99.times do |n|
+10.times do |n|
 	lat = Random.new.rand(33.906699..34.156027) 
 	lng = Random.new.rand(-118.533987..-118.190153) 
 
   Playlist.create!(title:  "WADDDUPPPP#{n}",
-               user_id: 1,
+               user_id: user.id,
                created_at:  DateTime.now,
                updated_at:  DateTime.now,
                latitude: lat,

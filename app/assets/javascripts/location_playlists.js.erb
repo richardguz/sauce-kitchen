@@ -3,12 +3,15 @@ var infoWindow;
 var locationInfoWindow;
 var locationMarker;
 var locationIcon;
+var input;
+var searchBox;
 
 var playlistMarkers = [];
 var showPlaylistMarkers = true;
 var showLocationMarkers = true;
 
 function initializeMap() {
+
 	infoWindow = new google.maps.InfoWindow({
     content: ""
 	});
@@ -21,7 +24,6 @@ function initializeMap() {
 	});
 	locationIcon = {
     url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // url
-    scaledSize: new google.maps.Size(50, 50), // scaled size
 	};
 	locationMarker = new google.maps.Marker({
 		map: map,
@@ -33,8 +35,29 @@ function initializeMap() {
 		locationInfoWindow.open(map, locationMarker);
   });
   
+  input = document.getElementById('pac-input');
+  searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  input.style.display = "inline";
+
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces()[0];
+    if (places.length == 0) {
+      return;
+    }
+    generateCoordinates(places);
+  });
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
+    var address = getParameterByName('address');
+    if (address) {
+      generateCoordinates(address);
+      return;
+    }
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
         lat: position.coords.latitude,
@@ -49,8 +72,7 @@ function initializeMap() {
 												'</div>' +
 												'<div class="notLocation">' +
 												'Not your location? You can enter your address here to get more accurate results.' +
-												'</div>' +
-												'<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
+												'</div>');
 
       locationMarker.setPosition(pos);
       locationInfoWindow.open(map, locationMarker);
@@ -83,6 +105,9 @@ function addPlaylistMarkers(playlists) {
 	playlists = JSON.parse(playlists.replace(/(&quot\;)/g,"\"").replace(/(&gt\;)/g,"\""))
 	for (var i = 0; i < playlists.length; i++)
   {
+    if (playlists[i]["private"] || !playlists[i]["playing"]){
+      continue;
+    }
     var pos = {
       lat: parseFloat(playlists[i]["lat"]),
       lng: parseFloat(playlists[i]["lng"])
@@ -152,42 +177,28 @@ function getPlaylistUrl(p_id) {
   return baseString + "/" + (p_id + 1)
 }
 
-function getAddress(dialog) {
-  var address = document.getElementById("address").value;
-  var city = document.getElementById("city").value;
-  var state = document.getElementById("state").value;
-  var zip = document.getElementById("zip").value;
-  var fullAddress = address + ", " + city + " " + state + ", " + zip
-  var address = fullAddress;
-  setCookie("address", address, 1000);
-  dialog.dialog( "close" );
-  generateCoordinates(address);
+function generateCoordinates(place) {
+  var pos = place.geometry.location;
+  
+  $('#latitude').val(pos.lat());
+  $('#longitude').val(pos.lng());
+  map.setCenter(pos);
+  locationMarker.setPosition(pos);
+  locationInfoWindow.setPosition(pos);
+  locationInfoWindow.setContent('<div class="title">' +
+                    '<h2>Your Current Location</h2>' +
+                    '</div>');
+  locationInfoWindow.open(map, locationMarker);
 }
 
-function generateCoordinates(address) {
-  var geocoder = new google.maps.Geocoder();
-  geocoder.geocode( { 'address': address}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-    	$('#latitude').val(results[0].geometry.location.lat());
-      $('#longitude').val(results[0].geometry.location.lng());
-      map.setCenter(results[0].geometry.location);
-      locationMarker.setPosition(results[0].geometry.location);
-      locationInfoWindow.setPosition(results[0].geometry.location);
-      locationInfoWindow.setContent('<div class="title">' +
-                        '<h2>Your Current Location</h2>' +
-                        '</div>' +
-                        '<div class="notLocation">' +
-                        'Not your location? You can enter your address here to get more accurate results.' +
-                        '</div>' +
-                        '<button onclick="openDialog()" style="margin: 0 auto;" id="enter-location">Enter Location</button>');
-      locationInfoWindow.open(map, locationMarker);
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
     }
-  });
-}
-
-function openDialog() {
-	var dialog = $( "#dialog-form" );
-	dialog.dialog( "open" );
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
