@@ -51,7 +51,8 @@ end
                user_id: user.id,
                created_at:  DateTime.now,
                updated_at:  DateTime.now,
+               playing: true,
                latitude: lat,
-               longitude: lng
+               longitude: lng,
                )
 end
