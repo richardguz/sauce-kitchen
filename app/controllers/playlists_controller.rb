@@ -134,7 +134,7 @@ class PlaylistsController < ApplicationController
         like_instance.destroy
         n_likes = Like.where(:playlist_id => params[:id]).count
         ret = {
-          :url => '/assets/clearheart.png',
+          :url => ActionController::Base.helpers.asset_path("clearheart.png"),
           :n_likes => n_likes
         }
         render :json => ret
@@ -142,7 +142,7 @@ class PlaylistsController < ApplicationController
         Like.create(user_id: session[:user_id], playlist_id: params[:id])
         n_likes = Like.where(:playlist_id => params[:id]).count
         ret = {
-          :url => '/assets/redheart.png',
+          :url => ActionController::Base.helpers.asset_path("redheart.png"),
           :n_likes => n_likes
         }
         render :json => ret
