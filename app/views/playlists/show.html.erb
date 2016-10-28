@@ -64,10 +64,10 @@
 </div>
 
 <div id="waitingSongs">
-	<ul id="waitingSongsList">
+	<ul id="waitingSongsList" class="list-group" >
 		<% @playlist.psongs.each do |psong| %>
 			<% if !psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
+				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
 					<button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
         	</button>
