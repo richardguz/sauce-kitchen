@@ -29,6 +29,11 @@ function displaySearchResults(searchResults){
 }
 
 function addSongToWaiting(element){
+	//first make song unclickable and change button
+	$(element).attr('disabled','disabled');
+	$(element).css('color','green');
+
+	//then get attributes and update
 	var song_id = $(element).parent().attr('song_id');
 	var title = $(element).parent().attr('title');
 
@@ -38,6 +43,7 @@ function addSongToWaiting(element){
 		//update locally TODO
 	});
 }
+
 
 function getPlaylistId(){
 	var path = window.location.pathname;
