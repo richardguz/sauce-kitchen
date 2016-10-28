@@ -6,11 +6,16 @@
     <%= image_tag "clearheart.png", id: "heart" %>
   <% end %>
   <div id="nlikes"><%= @likes %> likes</div>
-  <button id="activate" class="btn btn-success">Activate Playlist</button>
-	<button id="reset" class="btn btn-danger hidden">Deactivate Playlist</button>
+  <% if @isPlaying %>
+    <button id="activate" class="btn btn-success hidden">Activate Playlist</button>
+  	<button id="reset" class="btn btn-danger">Deactivate Playlist</button>
+  <% else %>
+    <button id="activate" class="btn btn-success">Activate Playlist</button>
+    <button id="reset" class="btn btn-danger hidden">Deactivate Playlist</button>
+  <% end %>
 </div>
 
-<%= render 'player' %>
+<%= render 'player'%>
 
 <!-- Modal -->
 <div id="addSongModal" class="modal fade" role="dialog">
@@ -90,6 +95,7 @@
 	    $("#player").show();
 	    $("#reset").removeClass('hidden');
 	    $("#activate").addClass('hidden');
+      togglePlaylistPlaying("<%= @playlist.id %>", true);
 	    playNextSong("<%= @playlist.id %>");
 		});
 
@@ -97,7 +103,8 @@
 	    $("#player").hide();
 	    $("#activate").removeClass('hidden');
 	    $("#reset").addClass('hidden');
-	    resetPlaylist("<%= @playlist.id %>");
+      resetPlaylist("<%= @playlist.id %>");
+	    togglePlaylistPlaying("<%= @playlist.id %>", false);
 	    DZ.player.pause();
 		});
   }

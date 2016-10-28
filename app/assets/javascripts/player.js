@@ -8,6 +8,15 @@ function resetPlaylist(pid){
   $.get("/playlists/" + pid + "/reset_play_history", function(){});
 }
 
+function togglePlaylistPlaying(pid, value){
+	if (value) {
+		$.get("/playlists/" + pid + "/set_playing_true", function(){});
+	}
+	else {
+		$.get("/playlists/" + pid + "/set_playing_false", function(){});
+	}
+}
+
 function searchDeezer(searchString){
 	$.ajax({
     url: "https://api.deezer.com/search?q=" + searchString + "&output=jsonp" + "&callback=?",

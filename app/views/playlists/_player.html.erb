@@ -1,2 +1,7 @@
-<div hidden id="dz-root"></div>
-<div hidden id="player" style="width:100%; padding-top:10px;" align="center"></div>
+<% if @isPlaying %>
+	<div id="dz-root"></div>
+	<div id="player" style="width:100%; padding-top:10px;" align="center"></div>
+<% else %>
+	<div hidden id="dz-root"></div>
+	<div hidden id="player" style="width:100%; padding-top:10px;" align="center"></div>
+<% end %>
