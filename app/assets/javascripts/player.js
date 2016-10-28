@@ -22,7 +22,10 @@ function searchDeezer(searchString){
 
 function displaySearchResults(searchResults){
 	$("#songSearchResults").empty();
-	$("#songSearchResults").append("<li song_id=" + searchResults.data[0].id + " title=" + searchResults.data[0].title + ">" + searchResults.data[0].title + " - " + searchResults.data[0].artist.name + "<button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></li>");
+	var len = searchResults.data.length;
+	for (var i = 0; i < len; i++) {
+    $("#songSearchResults").append("<li song_id=" + searchResults.data[i].id + " title=" + searchResults.data[i].title + ">" + searchResults.data[i].title + " - " + searchResults.data[i].artist.name + "<button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></li>");
+	}	
 }
 
 function addSongToWaiting(element){
