@@ -6,6 +6,7 @@ class PlaylistsController < ApplicationController
       if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
         @isLiked = true
       end
+      @isPlaying = @playlist.playing
       puts "eyyy"
       puts Like.where(user_id: session[:user_id], playlist_id: params[:id])
       puts "LIKES"
@@ -54,6 +55,12 @@ class PlaylistsController < ApplicationController
     @playlist.title = params[:playlist][:title]
     @playlist.save
     redirect_to @playlist
+  end
+
+  def updatePlaying
+    value = params[:value]
+    @playlist = Playlist.find_by(id: params[:id])
+    @playlist.update_attribute(:playing, value)
   end
 
   def poll
