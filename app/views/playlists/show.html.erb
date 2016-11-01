@@ -55,32 +55,54 @@
 </script>
 <h3>Queue</h3>
 <div id="queuedSongs" style="padding-top:10px;">
-	<ul id="queuedSongsList">
-		<% @playlist.psongs.each do |psong| %>
-			<% if psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %> - <%= psong.song.artist %>
-					<button onclick="upvoteClick(this);" class="upvote-icon">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Song</th>
+        <th>Artist</th>
+        <th>Upvotes</th>
+      </tr>
+    </thead>
+    <tbody id="queuedSongsList">
+      <% @playlist.psongs.each do |psong| %>
+      <% if psong.queued && !psong.played %>
+        <tr upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+          <td><%= psong.song.name %></td>
+          <td><%= psong.song.artist %></td>
+          <td><button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-        	</button>
-				</li>
-			<% end %>
-		<% end %>
-	</ul>
+          </button></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
 </div>
 
 <h3>Waiting to be Queued</h3>
 <div id="waitingSongs">
-	<ul id="waitingSongsList" class="list-group" >
-		<% @playlist.psongs.each do |psong| %>
-			<% if !psong.queued && !psong.played %>
-				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %> - <%= psong.song.artist %>
-					<button onclick="upvoteClick(this);" class="upvote-icon">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Song</th>
+        <th>Artist</th>
+        <th>Upvotes</th>
+      </tr>
+    </thead>
+    <tbody id="waitingSongsList">
+      <% @playlist.psongs.each do |psong| %>
+      <% if !psong.queued && !psong.played %>
+        <tr upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+          <td><%= psong.song.name %></td>
+          <td><%= psong.song.artist %></td>
+          <td><button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-        	</button>
-				</li>
-			<% end %>
-		<% end %>
-	</ul>
+          </button></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
 </div>
 
 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSongModal">Suggest Song</button>
@@ -125,13 +147,14 @@
 
   //adding listeners for upvote clicks
   function upvoteClick(element){
-  	var upvotes = parseInt($(element).parent().attr("upvotes"));
-    var upvoted = $(element).parent().attr("upvoted");
-  	var songid = $(element).parent().attr("songid");
+    var rowEl = $(element).parent().parent()
+  	var upvotes = parseInt(rowEl.attr("upvotes"));
+    var upvoted = rowEl.attr("upvoted");
+  	var songid = rowEl.attr("songid");
     if (upvoted == "false"){
     	upvotes += 1;
-    	$(element).parent().attr("upvotes", upvotes);
-      $(element).parent().attr("upvoted", "true");
+    	rowEl.attr("upvotes", upvotes);
+      rowEl.attr("upvoted", "true");
     	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
     	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + songid, function(){
     		console.log("request succesful");

@@ -13,6 +13,8 @@
 
 body {
   padding-top: 60px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .intro {
@@ -113,7 +115,7 @@ input {
   }
 }
 
-li[upvoted="true"] { 
+tr[upvoted="true"] { 
   button{
       color: green;
     }

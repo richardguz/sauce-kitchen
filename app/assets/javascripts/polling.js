@@ -38,7 +38,7 @@ function pollPlaylist(pid, uid){
 
 function sortByUpvotes(listElementId){
 	var list = $('#' + listElementId);
-	var orderedList = list.find('li').sort(function(a,b){ 
+	var orderedList = list.find('tr').sort(function(a,b){ 
 		votes_diff = $(b).attr('upvotes') - $(a).attr('upvotes');
 		if (votes_diff != 0)
 			return votes_diff;
@@ -48,15 +48,11 @@ function sortByUpvotes(listElementId){
 			else if ($(b).attr('songid') < $(a).attr('songid'))
 				return -1
 			else {
-				console.log($(b).attr('songid'))
-				console.log($(a).attr('songid'))
-				console.log($(b).text())
-				console.log($(a).text())
 				return 0
 			}
 		}
 	});
-	list.find('li').remove();
+	list.find('tr').remove();
 	list.append(orderedList);
 }
 
@@ -64,7 +60,7 @@ function handleQueued(song, psong, uid){
 	//checks if it's in list passed in
 	if (inSongsList(song, "queuedSongsList")){
 		//check upvotes and update if upvotes don't match
-		displayedUpvotes = $('#queuedSongsList li[songid=' + song.id + ']').attr('upvotes');
+		displayedUpvotes = $('#queuedSongsList tr[songid=' + song.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(song, "queuedSongsList");
 			appendToSongsList(song, psong, "queuedSongsList", uid);
@@ -89,7 +85,7 @@ function handleWaiting(song, psong, uid){
 	//checks if it's in waiting list
 	if (inSongsList(song, "waitingSongsList")){
 		//check upvotes and update if upvotes don't match
-		displayedUpvotes = $('#waitingSongsList li[songid=' + song.id + ']').attr('upvotes');
+		displayedUpvotes = $('#waitingSongsList tr[songid=' + song.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(song, "waitingSongsList");
 			appendToSongsList(song, psong, "waitingSongsList", uid);
@@ -111,16 +107,15 @@ function handleWaiting(song, psong, uid){
 }
 
 function appendToSongsList(song, psong, listId, uid){
-	console.log("user id =" + uid);
 	if (!songPlayed(psong)){
 		upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
 		$('#' + listId).append(
-				'<li upvotes=' + psong.psong.upvotes + ' songid=' + song.id + " upvoted=" + upvotedString + ">" + song.name + " - " + song.artist + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>");
+				'<tr upvotes=' + psong.psong.upvotes + ' songid=' + song.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button></td></tr>");
 	}
 }
 
 function removeFromSongsList(song, listId){
-	$('#' + listId + ' li[songid=' + song.id + ']').remove();
+	$('#' + listId + ' tr[songid=' + song.id + ']').remove();
 }
 
 function songPlayed(psong){
@@ -128,7 +123,7 @@ function songPlayed(psong){
 }
 
 function inSongsList(song, listId){
-	if ($('#' + listId + ' li[songid=' + song.id + ']').length > 0)
+	if ($('#' + listId + ' tr[songid=' + song.id + ']').length > 0)
 		return true;
 	else
 		return false;
