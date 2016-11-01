@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161023202925) do
+ActiveRecord::Schema.define(version: 20161031233059) do
 
   create_table "likes", force: :cascade do |t|
     t.datetime "created_at",  null: false
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 20161023202925) do
     t.integer  "upvotes",     default: 0
     t.boolean  "queued",      default: true
     t.boolean  "played",      default: false
+  end
+
+  create_table "relationships", force: :cascade do |t|
+    t.integer  "follower_id"
+    t.integer  "followed_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["followed_id"], name: "index_relationships_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
   create_table "songs", force: :cascade do |t|
