@@ -1,4 +1,13 @@
 class User < ApplicationRecord
+	has_many :active_relationships, class_name: "Relationship",
+																	foreign_key: "follower_id",
+																	dependent: :destroy
+	has_many :passive_relationships, class_name: "Relationship",
+																	foreign_key: "followed_id",
+																	dependent: :destroy
+
+	has_many :following, through: :active_relationships, source: :followed
+	has_many :followers, through: :passive_relationships, source: :follower
 	has_attached_file :avatar, styles: { medium: "200x200>", thumb: "100x100>" }, default_url: "missing.png"
 	validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
 
@@ -18,6 +27,18 @@ class User < ApplicationRecord
 
 	def password_auth?(password)
 		BCrypt::Password.new(self.password_digest).is_password?(password)
+	end
+
+	def follow(other_user)
+		active_relationships.create(followed_id: other_user.id)
+	end
+
+	def unfollow(other_user)
+		active_relationships.find_by(followed_id: other_user.id).destroy
+	end
+
+	def following?(other_user)
+		following.include?(other_user)
 	end
 
 	class << self

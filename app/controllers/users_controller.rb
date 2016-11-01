@@ -19,6 +19,8 @@ class UsersController < ApplicationController
       flash[:warning] = "User #{params[:id]} doesn't exist... check your facts yo"
       redirect_to root_url
     end
+    @followers = @user.followers
+    @following = @user.following
 	end
 
   def update
