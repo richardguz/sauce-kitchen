@@ -65,10 +65,23 @@ class PlaylistsController < ApplicationController
 
   def poll
     playlist = Playlist.find_by(id: params[:id])
+    psongs = playlist.psongs
+    psong_obj = psongs.map do |psong|
+      votes = psong.votes
+      voted_user_ids = []
+      votes.each do |vote|
+        voted_user_ids << vote.user_id
+      end
+      {
+        :psong => psong,
+        :voted_user_ids => voted_user_ids
+      }
+    end
     data = playlist ? { :title => playlist.title, 
                         :owner => playlist.user.id, 
-                        :psongs => playlist.psongs, 
-                        :songs => playlist.songs} : nil
+                        :psongs => psong_obj,
+                        :songs => playlist.songs } : nil
+                        #do something like below to get the votes passed in
     render :json => data
   end
 

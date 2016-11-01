@@ -19,15 +19,15 @@ function pollPlaylist(pid, uid){
 			//finds the psong corresponding to the song
 			var psong;
 			for (var i = 0; i < psongs.length; i++){
-				if (psongs[i].song_id == songs[j].id){
+				if (psongs[i].psong.song_id == songs[j].id){
 					psong = psongs[i];
 				}
 			}
 			//add any songs to the queues if they aren't already there
-			if (psong.queued)
-				handleQueued(songs[j], psong);
+			if (psong.psong.queued)
+				handleQueued(songs[j], psong, uid);
 			else
-				handleWaiting(songs[j], psong);
+				handleWaiting(songs[j], psong, uid);
 
 		}
 		sortByUpvotes('queuedSongsList');
@@ -43,17 +43,17 @@ function sortByUpvotes(listElementId){
 	list.append(orderedList);
 }
 
-function handleQueued(song, psong){
+function handleQueued(song, psong, uid){
 	//checks if it's in list passed in
 	if (inSongsList(song, "queuedSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#queuedSongsList li[songid=' + song.id + ']').attr('upvotes');
-		if (displayedUpvotes != psong.upvotes){
+		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(song, "queuedSongsList");
-			appendToSongsList(song, psong, "queuedSongsList");
+			appendToSongsList(song, psong, "queuedSongsList", uid);
 		}
 		else{
-			if(psong.played)
+			if(songPlayed(psong))
 				removeFromSongsList(song, "queuedSongsList");
 		}
 	}
@@ -64,21 +64,21 @@ function handleQueued(song, psong){
 			removeFromSongsList(song, "waitingSongsList");
 		}
 		//add to queued b/c it currently isn't there
-		appendToSongsList(song, psong, "queuedSongsList");
+		appendToSongsList(song, psong, "queuedSongsList", uid);
 	}
 }
 
-function handleWaiting(song, psong){
+function handleWaiting(song, psong, uid){
 	//checks if it's in waiting list
 	if (inSongsList(song, "waitingSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#waitingSongsList li[songid=' + song.id + ']').attr('upvotes');
-		if (displayedUpvotes != psong.upvotes){
+		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(song, "waitingSongsList");
-			appendToSongsList(song, psong, "waitingSongsList");
+			appendToSongsList(song, psong, "waitingSongsList", uid);
 		}
 		else{
-			if(psong.played)
+			if(songPlayed(psong))
 				removeFromSongsList(song, "waitingSongsList");
 		}
 	}
@@ -89,14 +89,17 @@ function handleWaiting(song, psong){
 			removeFromSongsList(song, "queuedSongsList");
 		}
 		//add to waiting b/c it currently isn't there
-		appendToSongsList(song, psong, "waitingSongsList");
+		appendToSongsList(song, psong, "waitingSongsList", uid);
 	}
 }
 
-function appendToSongsList(song, psong, listId){
-	if (!songPlayed(psong))
+function appendToSongsList(song, psong, listId, uid){
+	console.log("user id =" + uid);
+	if (!songPlayed(psong)){
+		upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
 		$('#' + listId).append(
-				'<li upvotes=' + psong.upvotes + ' songid=' + song.id + '>' + song.name + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.upvotes + "</span></button>");
+				'<li upvotes=' + psong.psong.upvotes + ' songid=' + song.id + " upvoted=" + upvotedString + ">" + song.name + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>");
+	}
 }
 
 function removeFromSongsList(song, listId){
@@ -104,7 +107,7 @@ function removeFromSongsList(song, listId){
 }
 
 function songPlayed(psong){
-	return psong.played;
+	return psong.psong.played;
 }
 
 function inSongsList(song, listId){

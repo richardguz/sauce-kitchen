@@ -113,6 +113,8 @@ input {
   }
 }
 
-.upvoted_by_user{
-  color: green;
+li[upvoted="true"] { 
+  button{
+      color: green;
+    }
 }

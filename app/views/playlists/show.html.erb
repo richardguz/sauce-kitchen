@@ -58,7 +58,7 @@
 	<ul id="queuedSongsList">
 		<% @playlist.psongs.each do |psong| %>
 			<% if psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %>
 					<button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
         	</button>
@@ -72,7 +72,7 @@
 	<ul id="waitingSongsList" class="list-group" >
 		<% @playlist.psongs.each do |psong| %>
 			<% if !psong.queued && !psong.played %>
-				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>"><%= psong.song.name %>
+				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %>
 					<button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
         	</button>
@@ -125,14 +125,20 @@
   //adding listeners for upvote clicks
   function upvoteClick(element){
   	var upvotes = parseInt($(element).parent().attr("upvotes"));
+    var upvoted = $(element).parent().attr("upvoted");
   	var songid = $(element).parent().attr("songid");
-  	upvotes += 1;
-  	console.log(upvotes);
-  	$(element).parent().attr("upvotes", upvotes);
-  	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
-  	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + songid, function(){
-  		console.log("request succesful");
-  	});
+    if (upvoted == "false"){
+    	upvotes += 1;
+    	$(element).parent().attr("upvotes", upvotes);
+      $(element).parent().attr("upvoted", "true");
+    	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
+    	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + songid, function(){
+    		console.log("request succesful");
+    	});
+    }
+    else{
+      alert("You've already upvoted bitch");
+    }
   }
 
   //queueing/waiting list logic
@@ -147,7 +153,7 @@
 	//initialize polling for playlist updates
 	window.setInterval(function(){
   		pollPlaylist(id,uid);
-}, 5000);
+}, 2000);
 
 function changeTextInModal(){
 	var searchString = $('#songSearch').val();
