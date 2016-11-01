@@ -27,4 +27,6 @@ Rails.application.routes.draw do
   get '/playlists/:id/set_playing_true', to: 'playlists#updatePlaying', value: true
   get '/playlists/:id/set_playing_false', to: 'playlists#updatePlaying', value: false
 
+  resources :relationships, only: [:create, :destroy]
+
 end

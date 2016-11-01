@@ -23,6 +23,10 @@ class UsersController < ApplicationController
     @following = @user.following
 	end
 
+  def follow(other_user)
+    @user.active_relationships.create(followed_id: other_user.id)
+  end
+
   def update
     @user = User.find(params[:id])
     if not params[:user]
