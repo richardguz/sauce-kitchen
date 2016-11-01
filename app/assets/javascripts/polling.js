@@ -38,7 +38,24 @@ function pollPlaylist(pid, uid){
 
 function sortByUpvotes(listElementId){
 	var list = $('#' + listElementId);
-	var orderedList = list.find('li').sort(function(a,b){ return $(b).attr('upvotes') - $(a).attr('upvotes'); });
+	var orderedList = list.find('li').sort(function(a,b){ 
+		votes_diff = $(b).attr('upvotes') - $(a).attr('upvotes');
+		if (votes_diff != 0)
+			return votes_diff;
+		else{
+			if ($(b).attr('songid') > $(a).attr('songid'))
+				return 1
+			else if ($(b).attr('songid') < $(a).attr('songid'))
+				return -1
+			else {
+				console.log($(b).attr('songid'))
+				console.log($(a).attr('songid'))
+				console.log($(b).text())
+				console.log($(a).text())
+				return 0
+			}
+		}
+	});
 	list.find('li').remove();
 	list.append(orderedList);
 }

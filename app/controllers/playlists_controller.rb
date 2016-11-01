@@ -1,3 +1,6 @@
+require 'net/http'
+require 'json'
+
 class PlaylistsController < ApplicationController
   def show
   	if (@playlist = Playlist.find_by(id: params[:id]))
@@ -141,9 +144,10 @@ class PlaylistsController < ApplicationController
   def add_song
     song_id = params[:sid]
     playlist_id = params[:pid]
-    title = params[:title]
+    json_response = deezer_song(song_id)    
     playlist = Playlist.find(playlist_id)
-    song = playlist.songs.create(name: title, deezer_id: song_id)
+
+    song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
     psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
     psong.update_column(:queued, false)
   end
@@ -180,5 +184,12 @@ class PlaylistsController < ApplicationController
 
     def isOwner(user, playlist)
       return user.playlists.exists?(playlist.id)
+    end
+
+    def deezer_song(id)
+      url = "http://api.deezer.com/track/#{id}&output=json"
+      uri = URI(url)
+      response = Net::HTTP.get(uri)
+      return JSON.parse(response, symbolize_keys: true)
     end
 end
