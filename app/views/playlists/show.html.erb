@@ -53,12 +53,12 @@
     });    
   });
 </script>
-
+<h3>Queue</h3>
 <div id="queuedSongs" style="padding-top:10px;">
 	<ul id="queuedSongsList">
 		<% @playlist.psongs.each do |psong| %>
 			<% if psong.queued && !psong.played %>
-				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %>
+				<li upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %> - <%= psong.song.artist %>
 					<button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
         	</button>
@@ -68,11 +68,12 @@
 	</ul>
 </div>
 
+<h3>Waiting to be Queued</h3>
 <div id="waitingSongs">
 	<ul id="waitingSongsList" class="list-group" >
 		<% @playlist.psongs.each do |psong| %>
 			<% if !psong.queued && !psong.played %>
-				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %>
+				<li class="text-center list-group-item" upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>"><%= psong.song.name %> - <%= psong.song.artist %>
 					<button onclick="upvoteClick(this);" class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
         	</button>

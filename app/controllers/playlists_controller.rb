@@ -10,10 +10,6 @@ class PlaylistsController < ApplicationController
         @isLiked = true
       end
       @isPlaying = @playlist.playing
-      puts "eyyy"
-      puts Like.where(user_id: session[:user_id], playlist_id: params[:id])
-      puts "LIKES"
-      puts @likes
       @user = current_user
       @playlist_owner = @playlist.user
       if @playlist.private && @user != @playlist_owner

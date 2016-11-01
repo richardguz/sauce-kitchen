@@ -115,7 +115,7 @@ function appendToSongsList(song, psong, listId, uid){
 	if (!songPlayed(psong)){
 		upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
 		$('#' + listId).append(
-				'<li upvotes=' + psong.psong.upvotes + ' songid=' + song.id + " upvoted=" + upvotedString + ">" + song.name + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>");
+				'<li upvotes=' + psong.psong.upvotes + ' songid=' + song.id + " upvoted=" + upvotedString + ">" + song.name + " - " + song.artist + " <button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>");
 	}
 }
 
