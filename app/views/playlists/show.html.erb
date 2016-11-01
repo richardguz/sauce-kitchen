@@ -66,7 +66,7 @@
     <tbody id="queuedSongsList">
       <% @playlist.psongs.each do |psong| %>
       <% if psong.queued && !psong.played %>
-        <tr upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
           <td><button onclick="upvoteClick(this);" class="upvote-icon">
@@ -92,7 +92,7 @@
     <tbody id="waitingSongsList">
       <% @playlist.psongs.each do |psong| %>
       <% if !psong.queued && !psong.played %>
-        <tr upvotes="<%=psong.upvotes%>" songid="<%=psong.song_id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
           <td><button onclick="upvoteClick(this);" class="upvote-icon">
@@ -150,13 +150,13 @@
     var rowEl = $(element).parent().parent()
   	var upvotes = parseInt(rowEl.attr("upvotes"));
     var upvoted = rowEl.attr("upvoted");
-  	var songid = rowEl.attr("songid");
+  	var psongid = rowEl.attr("psongid");
     if (upvoted == "false"){
     	upvotes += 1;
     	rowEl.attr("upvotes", upvotes);
       rowEl.attr("upvoted", "true");
     	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
-    	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + songid, function(){
+    	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + psongid, function(){
     		console.log("request succesful");
     	});
     }

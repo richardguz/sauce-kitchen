@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   get '/playlists/json/:id', to: 'playlists#poll', as: 'playlist_json'
   get '/playlists/:id/next_song/json', to: 'playlists#next_song', as: 'next_song_json'
   get '/playlists/:id/reset_play_history', to: 'playlists#reset_play_history'
-  get '/playlists/:id/upvote/:songid', to: 'playlists#upvote'
+  get '/playlists/:id/upvote/:psongid', to: 'playlists#upvote'
   get '/playlists/:pid/add_song/:sid/:title', to: 'playlists#add_song'
   get '/playlists/:id/set_playing_true', to: 'playlists#updatePlaying', value: true
   get '/playlists/:id/set_playing_false', to: 'playlists#updatePlaying', value: false

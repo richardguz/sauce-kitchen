@@ -127,12 +127,12 @@ class PlaylistsController < ApplicationController
 
   def upvote
     #does playlist exist?
-    if (playlist = Playlist.find_by(id: params[:id]))
-      psong = Psong.find_by(song_id: params[:songid], playlist_id: params[:id])
+    if (playlist = Playlist.find(params[:id]))
+      psong = Psong.find(params[:psongid])
       if (psong.votes.create(user_id: current_user.id))
         psong.update(upvotes: 1 + psong.upvotes)
       end
-    else 
+    else
       redirect_to root_url 
     end
   end
@@ -143,9 +143,15 @@ class PlaylistsController < ApplicationController
     json_response = deezer_song(song_id)    
     playlist = Playlist.find(playlist_id)
 
-    song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
-    psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
-    psong.update_column(:queued, false)
+    if (song = Song.find_by(deezer_id: song_id))
+      puts "FOUND IN DB"
+      Psong.create(song_id: song.id, playlist_id: playlist_id)
+    else
+      puts "NEW SONG"
+      song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
+      psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
+      psong.update_column(:queued, false)
+    end
   end
 
   def like
