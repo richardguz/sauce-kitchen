@@ -33,7 +33,7 @@ function displaySearchResults(searchResults){
 	$("#songSearchResults").empty();
 	var len = searchResults.data.length;
 	for (var i = 0; i < len; i++) {
-    $("#songSearchResults").append("<li song_id=" + searchResults.data[i].id + " title=" + searchResults.data[i].title + ">" + searchResults.data[i].title + " - " + searchResults.data[i].artist.name + "<button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></li>");
+    $("#songSearchResults").append("<tr song_id=" + searchResults.data[i].id + " title=" + searchResults.data[i].title + "><td>" + searchResults.data[i].title + "</td><td>" + searchResults.data[i].artist.name + "</td><td><button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></td></tr>");
 	}	
 }
 
@@ -43,8 +43,9 @@ function addSongToWaiting(element){
 	$(element).css('color','green');
 
 	//then get attributes and update
-	var song_id = $(element).parent().attr('song_id');
-	var title = $(element).parent().attr('title');
+	var trEl = $(element).parent().parent()
+	var song_id = trEl.attr('song_id');
+	var title = trEl.attr('title');
 
 	//make request to update in db
 	$.get("/playlists/" + getPlaylistId() + "/add_song/" + song_id + "/" + title, function(){
