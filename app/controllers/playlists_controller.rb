@@ -145,7 +145,7 @@ class PlaylistsController < ApplicationController
 
     if (song = Song.find_by(deezer_id: song_id))
       psong = Psong.create(song_id: song.id, playlist_id: playlist_id)
-      if !(isOwner(current_user, playlist))
+      if (!is_logged_in || !isOwner(current_user, playlist))
         psong.update_column(:queued, false)
     end
     else
@@ -153,7 +153,7 @@ class PlaylistsController < ApplicationController
       puts json_response['contributors']
       song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
       psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
-      if !(isOwner(current_user, playlist))
+      if (!is_logged_in || !isOwner(current_user, playlist))
         psong.update_column(:queued, false)
       end
     end

@@ -75,10 +75,10 @@
     <tbody id="queuedSongsList">
       <% @playlist.psongs.each do |psong| %>
       <% if psong.queued && !psong.played %>
-        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
-          <td><button onclick="upvoteClick(this);" class="upvote-icon">
+          <td><button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
           </button></td>
         </tr>
@@ -101,10 +101,10 @@
     <tbody id="waitingSongsList">
       <% @playlist.psongs.each do |psong| %>
       <% if !psong.queued && !psong.played %>
-        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if psong.votes.where(:user_id => @user.id).exists?%>true<%else%>false<%end%>">
+        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
-          <td><button onclick="upvoteClick(this);" class="upvote-icon">
+          <td><button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
             <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
           </button></td>
         </tr>
@@ -177,7 +177,10 @@
   //queueing/waiting list logic
 	//grab the user id to validate user
 	var id = "<%= @playlist.id %>";
-	var uid = "<%= session[:user_id] %>"
+	var uid = "<%= session[:user_id] %>";
+  //if no user is logged in... 
+  if (!uid)
+    uid = -1;
 
 	//initial sort
 	sortByUpvotes('queuedSongsList');

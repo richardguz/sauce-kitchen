@@ -110,8 +110,9 @@ function handleWaiting(song, psong, uid){
 function appendToSongsList(song, psong, listId, uid){
 	if (!songPlayed(psong)){
 		upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
+		upvoteFunctionString = uid != -1 ? "upvoteClick(this);" : "notLoggedInAlert();"
 		$('#' + listId).append(
-				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick='upvoteClick(this);' class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button></td></tr>");
+				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick=" + upvoteFunctionString + " class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button></td></tr>");
 	}
 }
 
@@ -128,6 +129,10 @@ function inSongsList(psong, listId){
 		return true;
 	else
 		return false;
+}
+
+function notLoggedInAlert(){
+	alert("You must be logged in to upvote songs!");
 }
 
 

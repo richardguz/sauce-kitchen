@@ -21,6 +21,14 @@ module SessionsHelper
 		end
 	end
 
+	def is_logged_in
+		if session[:user_id]
+			return true
+		else
+			return false
+		end
+	end
+
 	def login(user)
 		session[:user_id] = user.id
 	end
