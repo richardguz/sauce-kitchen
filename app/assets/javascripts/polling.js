@@ -116,12 +116,12 @@ function appendToSongsList(song, psong, listId, uid, isOwner){
 		var adminButton = ""
 		if (isOwner){
 			if (listId == "waitingSongsList")
-				adminButton = "<button class='promote-button' onclick='promoteClick(this);'><span class='glyphicon glyphicon glyphicon-chevron-up'>Promote</span></button>"
+				adminButton = "<button class='promote-button btn btn-success' onclick='promoteClick(this);'><span>Promote</span></button>"
 			else 
-				adminButton = "<button class='demote-button' onclick='demoteClick(this);'><span class='glyphicon glyphicon glyphicon-chevron-down'>Demote</span></button>"
+				adminButton = "<button class='demote-button btn btn-danger' onclick='demoteClick(this);'><span>Demote</span></button>"
 		} 
 		$('#' + listId).append(
-				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick=" + upvoteFunctionString + " class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>" + adminButton + "</td></tr>");
+				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick=" + upvoteFunctionString + " class='upvote-icon btn btn-default'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button> " + adminButton + "</td></tr>");
 	}
 }
 

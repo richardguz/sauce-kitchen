@@ -33,7 +33,7 @@ function displaySearchResults(searchResults){
 	$("#songSearchResults").empty();
 	var len = searchResults.data.length;
 	for (var i = 0; i < len; i++) {
-    $("#songSearchResults").append("<tr song_id=" + searchResults.data[i].id + " title=" + searchResults.data[i].title + "><td>" + searchResults.data[i].title + "</td><td>" + searchResults.data[i].artist.name + "</td><td><button onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></td></tr>");
+    $("#songSearchResults").append("<tr song_id=" + searchResults.data[i].id + " title=" + searchResults.data[i].title + "><td>" + searchResults.data[i].title + "</td><td>" + searchResults.data[i].artist.name + "</td><td><button class='btn btn-default' onclick='addSongToWaiting(this);'><span class='glyphicon glyphicon glyphicon-plus'></span></button></td></tr>");
 	}	
 }
 

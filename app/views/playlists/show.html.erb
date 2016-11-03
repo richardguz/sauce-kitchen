@@ -6,13 +6,15 @@
     <%= image_tag "clearheart.png", id: "heart" %>
   <% end %>
   <div id="nlikes"><%= @likes %> likes</div>
-  <% if @isPlaying %>
-    <button id="activate" class="btn btn-success hidden">Activate Playlist</button>
-  	<button id="reset" class="btn btn-danger">Deactivate Playlist</button>
-  <% else %>
-    <button id="activate" class="btn btn-success">Activate Playlist</button>
-    <button id="reset" class="btn btn-danger hidden">Deactivate Playlist</button>
-  <% end %>
+  <% if @user == @playlist_owner %>
+    <% if @isPlaying %>
+      <button id="activate" class="btn btn-success hidden">Activate Playlist</button>
+    	<button id="reset" class="btn btn-danger">Deactivate Playlist</button>
+    <% else %>
+      <button id="activate" class="btn btn-success">Activate Playlist</button>
+      <button id="reset" class="btn btn-danger hidden">Deactivate Playlist</button>
+    <% end %>
+  <%end%>
 </div>
 
 <%= render 'player'%>
@@ -62,7 +64,7 @@
     });    
   });
 </script>
-<h3 style="padding-top:10px;">Queue</h3>
+<h3 style="padding-top:10px;">Queue<% if @user == @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Add Song</button><%end%></h3>
 <div id="queuedSongs">
   <table class="table">
     <thead>
@@ -79,12 +81,12 @@
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
           <td>
-            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
+            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
               <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
             </button>
             <% if @user == @playlist_owner %>
-              <button class="demote-button" onclick="demoteClick(this);">
-                <span class="glyphicon glyphicon glyphicon-chevron-down">Demote</span>
+              <button class="demote-button btn btn-danger" onclick="demoteClick(this);">
+                <span>Demote</span>
               </button>
             <%end%>
           </td>
@@ -95,7 +97,7 @@
   </table>
 </div>
 
-<h3>Waiting to be Queued</h3>
+<h3>Waiting to be Queued<% if @user != @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Suggest Song</button><%end%></h3>
 <div id="waitingSongs">
   <table class="table">
     <thead>
@@ -112,12 +114,12 @@
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
           <td>
-            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
+            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
               <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
             </button>
             <% if @user == @playlist_owner %>
-              <button class="promote-button" onclick="promoteClick(this);">
-                <span class="glyphicon glyphicon glyphicon-chevron-up">Promote</span>
+              <button class="promote-button btn btn-success" onclick="promoteClick(this);">
+                <span>Promote</span>
               </button>
             <%end%>
           </td>
@@ -127,8 +129,6 @@
     </tbody>
   </table>
 </div>
-
-<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSongModal">Suggest Song</button>
 
 <script type="text/javascript">
 //player init
@@ -195,6 +195,7 @@
     $.get('/demote/' + psongid, function(){
         console.log("demote request successful");
       });
+    rowEl.remove();
   }
 
   function promoteClick(element){
@@ -204,6 +205,7 @@
     $.get('/promote/' + psongid, function(){
         console.log("promote request successful");
       });
+    rowEl.remove();
   }
 
   //queueing/waiting list logic
