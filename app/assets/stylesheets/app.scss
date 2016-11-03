@@ -116,7 +116,7 @@ input {
 }
 
 tr[upvoted="true"] { 
-  button{
+  button.upvote-icon{
       color: green;
     }
 }

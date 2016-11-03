@@ -69,7 +69,7 @@
       <tr>
         <th>Song</th>
         <th>Artist</th>
-        <th>Upvotes</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody id="queuedSongsList">
@@ -78,9 +78,16 @@
         <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
-          <td><button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
-            <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-          </button></td>
+          <td>
+            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
+              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+            </button>
+            <% if @user == @playlist_owner %>
+              <button class="demote-button" onclick="demoteClick(this);">
+                <span class="glyphicon glyphicon glyphicon-chevron-down">Demote</span>
+              </button>
+            <%end%>
+          </td>
         </tr>
       <% end %>
     <% end %>
@@ -95,7 +102,7 @@
       <tr>
         <th>Song</th>
         <th>Artist</th>
-        <th>Upvotes</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody id="waitingSongsList">
@@ -104,9 +111,16 @@
         <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
           <td><%= psong.song.name %></td>
           <td><%= psong.song.artist %></td>
-          <td><button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
-            <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-          </button></td>
+          <td>
+            <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon">
+              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+            </button>
+            <% if @user == @playlist_owner %>
+              <button class="promote-button" onclick="promoteClick(this);">
+                <span class="glyphicon glyphicon glyphicon-chevron-up">Promote</span>
+              </button>
+            <%end%>
+          </td>
         </tr>
       <% end %>
     <% end %>
@@ -172,6 +186,24 @@
     else{
       alert("You've already upvoted... check your privilege bro");
     }
+  }
+
+  function demoteClick(element){
+    console.log("demote clicked");
+    var rowEl = $(element).parent().parent()
+    var psongid = rowEl.attr("psongid");
+    $.get('/demote/' + psongid, function(){
+        console.log("demote request successful");
+      });
+  }
+
+  function promoteClick(element){
+    console.log("promote clicked")
+    var rowEl = $(element).parent().parent()
+    var psongid = rowEl.attr("psongid");
+    $.get('/promote/' + psongid, function(){
+        console.log("promote request successful");
+      });
   }
 
   //queueing/waiting list logic

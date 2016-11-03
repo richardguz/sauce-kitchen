@@ -3,6 +3,7 @@ function pollPlaylist(pid, uid){
 		//updates title of the playlist
 		var songs = playlist.songs;
 		var psongs = playlist.psongs;
+		var isOwner = (uid == playlist['owner'].toString())
 
 		//updates the title
 		//updates to any other additional general info would go here too (with dynaspan)
@@ -23,9 +24,9 @@ function pollPlaylist(pid, uid){
 					psong = psongs[i];
 					//add any songs to the queues if they aren't already there
 					if (psong.psong.queued)
-						handleQueued(songs[j], psong, uid);
+						handleQueued(songs[j], psong, uid, isOwner);
 					else
-						handleWaiting(songs[j], psong, uid);
+						handleWaiting(songs[j], psong, uid, isOwner);
 				}
 			}
 			
@@ -57,14 +58,14 @@ function sortByUpvotes(listElementId){
 	list.append(orderedList);
 }
 
-function handleQueued(song, psong, uid){
+function handleQueued(song, psong, uid, isOwner){
 	//checks if it's in list passed in
 	if (inSongsList(psong, "queuedSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#queuedSongsList tr[psongid=' + psong.psong.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(psong, "queuedSongsList");
-			appendToSongsList(song, psong, "queuedSongsList", uid);
+			appendToSongsList(song, psong, "queuedSongsList", uid, isOwner);
 		}
 		else{
 			if(songPlayed(psong))
@@ -78,18 +79,18 @@ function handleQueued(song, psong, uid){
 			removeFromSongsList(psong, "waitingSongsList");
 		}
 		//add to queued b/c it currently isn't there
-		appendToSongsList(song, psong, "queuedSongsList", uid);
+		appendToSongsList(song, psong, "queuedSongsList", uid, isOwner);
 	}
 }
 
-function handleWaiting(song, psong, uid){
+function handleWaiting(song, psong, uid, isOwner){
 	//checks if it's in waiting list
 	if (inSongsList(psong, "waitingSongsList")){
 		//check upvotes and update if upvotes don't match
 		displayedUpvotes = $('#waitingSongsList tr[psongid=' + psong.psong.id + ']').attr('upvotes');
 		if (displayedUpvotes != psong.psong.upvotes){
 			removeFromSongsList(psong, "waitingSongsList");
-			appendToSongsList(song, psong, "waitingSongsList", uid);
+			appendToSongsList(song, psong, "waitingSongsList", uid, isOwner);
 		}
 		else{
 			if(songPlayed(psong))
@@ -103,16 +104,24 @@ function handleWaiting(song, psong, uid){
 			removeFromSongsList(psong, "queuedSongsList");
 		}
 		//add to waiting b/c it currently isn't there
-		appendToSongsList(song, psong, "waitingSongsList", uid);
+		appendToSongsList(song, psong, "waitingSongsList", uid, isOwner);
 	}
 }
 
-function appendToSongsList(song, psong, listId, uid){
+function appendToSongsList(song, psong, listId, uid, isOwner){
+	console.log("psong id = " + psong.psong.id)
 	if (!songPlayed(psong)){
-		upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
-		upvoteFunctionString = uid != -1 ? "upvoteClick(this);" : "notLoggedInAlert();"
+		var upvotedString = psong.voted_user_ids.includes(parseInt(uid)) ? "true" : "false"
+		var upvoteFunctionString = uid != -1 ? "upvoteClick(this);" : "notLoggedInAlert();"
+		var adminButton = ""
+		if (isOwner){
+			if (listId == "waitingSongsList")
+				adminButton = "<button class='promote-button' onclick='promoteClick(this);'><span class='glyphicon glyphicon glyphicon-chevron-up'>Promote</span></button>"
+			else 
+				adminButton = "<button class='demote-button' onclick='demoteClick(this);'><span class='glyphicon glyphicon glyphicon-chevron-down'>Demote</span></button>"
+		} 
 		$('#' + listId).append(
-				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick=" + upvoteFunctionString + " class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button></td></tr>");
+				'<tr upvotes=' + psong.psong.upvotes + ' psongid=' + psong.psong.id + " upvoted=" + upvotedString + "><td>" + song.name + "</td><td>" + song.artist + "</td><td><button onclick=" + upvoteFunctionString + " class='upvote-icon'><span class='glyphicon glyphicon glyphicon-chevron-up'>" + psong.psong.upvotes + "</span></button>" + adminButton + "</td></tr>");
 	}
 }
 
