@@ -29,9 +29,9 @@
     </style>
   </head>
 
-  <%= render 'layouts/header' unless request.env['PATH_INFO'] == '/' %>
+  <%= render 'layouts/header' unless request.env['PATH_INFO'] == '/' %> 
   <body>
-  	<%= render 'layouts/flash' unless request.env['PATH_INFO'] == '/' %>
+    <%= render 'layouts/flash' unless request.env['PATH_INFO'] == '/' %>
     <%= yield %>
   </body>
 </html>
