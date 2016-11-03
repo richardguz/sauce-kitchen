@@ -11,6 +11,11 @@
   margin-bottom: 0px;
 }
 
+html{
+  height: 100%;
+
+}
+
 body {
   padding-top: 60px;
   margin-left: 10px;
@@ -20,6 +25,13 @@ body {
 .intro {
   position: relative;
   max-width: 100%;
+}
+
+.introflash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .introcontent {
