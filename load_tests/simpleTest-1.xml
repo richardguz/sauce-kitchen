@@ -17,6 +17,10 @@
     <arrivalphase phase="1" duration="10" unit="second">
       <users arrivalrate="1" unit="second"></users>
     </arrivalphase>
+
+    <arrivalphase phase="2" duration="10" unit="second">
+      <users arrivalrate="2" unit="second"></users>
+    </arrivalphase>
   </load>
 
   <options>
@@ -30,9 +34,27 @@
 
   <sessions>
     <session name="http-example" probability="100" type="ts_http">
+
       <request>
         <http url='/' version='1.1' method='GET'></http>
       </request>
+
+      <thinktime value="2" random="true"></thinktime>
+      
+      <request>
+        <http url='/signup' version='1.1' method='GET'></http>
+      </request>
+
+      <thinktime value="2" random="true"></thinktime>
+
+      <setdynvars sourcetype="random_number" start="1000" end="9999999">
+        <var name="userRandInt"/>
+      </setdynvars>
+
+      <request subst="true">
+        <http url='/signup' version='1.1' method='POST' contents="username=user%%userRandInt%%&amp;email=user%%userRandInt%%@gmail.com&amp;password=password&amp;password_confirmation=password"></http>
+      </request>
+
     </session>
   </sessions>
 </tsung>
