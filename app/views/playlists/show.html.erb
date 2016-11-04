@@ -7,6 +7,7 @@
   <% end %>
   <div id="nlikes"><%= @likes %> likes</div>
   <% if @user == @playlist_owner %>
+    <button id="deezer_connect" class="btn btn-success">Connect to Deezer</button>
     <% if @isPlaying %>
       <button id="activate" class="btn btn-success hidden">Activate Playlist</button>
     	<button id="reset" class="btn btn-danger">Deactivate Playlist</button>
@@ -133,9 +134,11 @@
 <script type="text/javascript">
 //player init
 	function onPlayerLoaded() {
+    console.log("PLAYER LOADED")
     DZ.Event.suscribe('track_end', function(arg){
     	playNextSong("<%= @playlist.id %>");
     });
+
 
 	  $("#activate").click(function(){
 	    $("#player").show();
@@ -160,8 +163,8 @@
     channelUrl : 'http://35.161.98.140/pages/channel.html',
     player : {
       container : 'player',
+      playlist: true,
       cover : true,
-      playlist : true,
       width : 650,
       height : 100,
       onload : onPlayerLoaded
@@ -207,6 +210,12 @@
       });
     rowEl.remove();
   }
+
+  $("#deezer_connect").click(function(){
+      var url = window.location.href;
+      var externalLoginWindow = "https://connect.deezer.com/oauth/auth.php?app_id=211642&redirect_uri=" + url + "&perms=basic_access,email";
+      window.location = externalLoginWindow;
+    });
 
   //queueing/waiting list logic
 	//grab the user id to validate user
