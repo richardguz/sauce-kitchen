@@ -52,7 +52,7 @@
       </setdynvars>
 
       <request subst="true">
-        <http url='/signup' version='1.1' method='POST' contents="username=user%%userRandInt%%&amp;email=user%%userRandInt%%@gmail.com&amp;password=password&amp;password_confirmation=password"></http>
+        <http url='/signup' version='1.1' method='POST' contents="user[username]=user%%userRandInt%%&amp;user[email]=user%%userRandInt%%@gmail.com&amp;user[password]=password&amp;user[password_confirmation]=password"></http>
       </request>
 
     </session>
