@@ -132,6 +132,7 @@
 </div>
 
 <script type="text/javascript">
+
 //player init
 	function onPlayerLoaded() {
     console.log("PLAYER LOADED")
@@ -159,8 +160,8 @@
   }
 
   DZ.init({
-    appId  : '211642',
-    channelUrl : 'http://35.161.98.140/pages/channel.html',
+    appId  : '213622',
+    channelUrl : 'http://35.161.251.23/pages/channel.html',
     player : {
       container : 'player',
       playlist: true,
@@ -213,8 +214,9 @@
 
   $("#deezer_connect").click(function(){
       var url = window.location.href;
-      var externalLoginWindow = "https://connect.deezer.com/oauth/auth.php?app_id=211642&redirect_uri=" + url + "&perms=basic_access,email";
-      window.location = externalLoginWindow;
+      var domain = "http://35.161.251.23"
+      var externalLoginWindow = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
+      window.open(externalLoginWindow);
     });
 
   //queueing/waiting list logic
