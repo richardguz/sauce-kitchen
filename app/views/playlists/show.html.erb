@@ -214,7 +214,7 @@
 
   $("#deezer_connect").click(function(){
       var url = window.location.href;
-      var domain = "http://35.161.251.23/playlists/playlists/<%= @playlist.id %>"
+      var domain = "http://35.161.251.23/playlists/<%= @playlist.id %>"
       var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
       window.location = deezerConnectUrl;
       //deezerLogin();
