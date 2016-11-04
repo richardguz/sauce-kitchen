@@ -29,7 +29,7 @@
     </style>
   </head>
 
-  <%= render 'layouts/header' unless request.env['PATH_INFO'] == '/' %> 
+  <%= render 'layouts/header'%>
   <body>
     <%= render 'layouts/flash' unless request.env['PATH_INFO'] == '/' %>
     <%= yield %>

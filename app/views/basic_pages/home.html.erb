@@ -9,7 +9,10 @@
 			<p>A damn fine music exploration and collaboration application built for you!</p>
 			<% if current_user.nil? %>
 				<%= link_to "Sign Up and Start Cookin' Beats", signup_path, class: "btn btn-primary btn-lg" %>
-				<p class="alreadylogged"> Already have an account? Log in <%= link_to "here", login_path %> </p>
+				<br/>
+				<div class="alreadyLoggedContainer btn">
+					<p class="alreadylogged"> Already have an account? Log in <%= link_to "here", login_path %> </p>
+				</div>
 			<% else %>
 				<%= link_to "Go to Profile and Start Cookin' Beats!", current_user, class: "btn btn-primary btn-lg" %>
 			<% end %>

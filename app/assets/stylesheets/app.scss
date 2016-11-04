@@ -54,8 +54,15 @@ body {
   h1 {
     margin-bottom: 10px;
   }
-  .alreadylogged {
-    font-size: small;
+  .alreadyLoggedContainer {
+    color: black;
+    background-color: black;
+    margin-top: 20px;
+    height: 40px;
+    .alreadylogged {
+      font-size: small;
+      color: white;
+    }
   }
 }
 
