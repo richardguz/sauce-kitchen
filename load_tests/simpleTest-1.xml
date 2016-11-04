@@ -52,7 +52,7 @@
       </setdynvars>
 
       <request subst="true">
-        <http url='/signup' version='1.1' method='POST' contents="user[username]=user%%userRandInt%%&amp;user[email]=user%%userRandInt%%@gmail.com&amp;user[password]=password&amp;user[password_confirmation]=password"></http>
+        <http url='/signup' version='1.1' method='POST' contents="utf8=%E2%9C%93&amp;authenticity_token=HnoaHdtSbf0EI%2F3t3DpJSXhpB97aewH2vTHmeMu6waon4YBXfLgFKqkBUGHv1Uo3aAMrDdwWLsivwPM1C%2BCfYg%3D%3D&amp;user%5Bemail%5D=user%%userRandInt%%%40gmail.com&amp;user%5Busername%5D=user%%userRandInt%%&amp;user%5Bpassword%5D=password&amp;user%5Bpassword_confirmation%5D=password&amp;commit=Signup%21"></http>
       </request>
 
     </session>
