@@ -152,13 +152,14 @@
     	playNextSong("<%= @playlist.id %>");
     });
 
-    
+
     DZ.getLoginStatus(function(response) {
       if (response.authResponse) {
         console.log("logged in")
         $("#deezer_connect").addClass("hidden")
       } else {
         console.log("not logged in")
+        alert("To activate this playlist, you must be logged into a premium deezer account...click Connect to Deezer to be redirected");
       }
     });
 
@@ -235,11 +236,16 @@
   }
 
   $("#deezer_connect").click(function(){
-      var url = window.location.href;
-      var domain = "http://35.161.251.23/playlists/<%= @playlist.id %>"
-      var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
-      window.location = deezerConnectUrl;
+
+      //if we want to use deezer's login
+      //var url = window.location.href;
+      //var domain = "http://35.161.251.23/playlists/<%= @playlist.id %>"
+      //var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
+      //window.location = deezerConnectUrl;
       //deezerLogin();
+
+      window.open("http://www.deezer.com/");
+
     });
 
   function deezerLogin() {
