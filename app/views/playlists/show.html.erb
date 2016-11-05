@@ -62,7 +62,19 @@
     $("#heart").click(function(){
       console.log("Heart clicked");
       clickHeart(<%= @playlist.id %>);
-    });    
+    }); 
+
+
+    function getDeezerToken(){
+      var unparsedTokenString = window.location.pathname.split('#');
+      var tokenString = unparsedTokenString[1].split('=')[1].split('&')[0]
+      var expiresString = unparsedTokenString[1].split('=')[2]
+      console.log(unparsedTokenString)
+      console.log(tokenString)
+      console.log(expiresString)
+    }
+
+    //getDeezerToken();
   });
 </script>
 <h3 style="padding-top:10px;">Queue<% if @user == @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Add Song</button><%end%></h3>
@@ -138,6 +150,16 @@
     console.log("PLAYER LOADED")
     DZ.Event.suscribe('track_end', function(arg){
     	playNextSong("<%= @playlist.id %>");
+    });
+
+    
+    DZ.getLoginStatus(function(response) {
+      if (response.authResponse) {
+        console.log("logged in")
+        $("#deezer_connect").addClass("hidden")
+      } else {
+        console.log("not logged in")
+      }
     });
 
 
