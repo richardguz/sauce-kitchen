@@ -62,7 +62,19 @@
     $("#heart").click(function(){
       console.log("Heart clicked");
       clickHeart(<%= @playlist.id %>);
-    });    
+    }); 
+
+
+    function getDeezerToken(){
+      var unparsedTokenString = window.location.pathname.split('#');
+      var tokenString = unparsedTokenString[1].split('=')[1].split('&')[0]
+      var expiresString = unparsedTokenString[1].split('=')[2]
+      console.log(unparsedTokenString)
+      console.log(tokenString)
+      console.log(expiresString)
+    }
+
+    //getDeezerToken();
   });
 </script>
 <h3 style="padding-top:10px;">Queue<% if @user == @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Add Song</button><%end%></h3>
@@ -132,11 +144,23 @@
 </div>
 
 <script type="text/javascript">
+
 //player init
 	function onPlayerLoaded() {
     console.log("PLAYER LOADED")
     DZ.Event.suscribe('track_end', function(arg){
     	playNextSong("<%= @playlist.id %>");
+    });
+
+
+    DZ.getLoginStatus(function(response) {
+      if (response.authResponse) {
+        console.log("logged in")
+        $("#deezer_connect").addClass("hidden")
+      } else {
+        console.log("not logged in")
+        alert("To activate this playlist, you must be logged into a premium deezer account...click Connect to Deezer to be redirected");
+      }
     });
 
 
@@ -159,8 +183,8 @@
   }
 
   DZ.init({
-    appId  : '211642',
-    channelUrl : 'http://35.161.98.140/pages/channel.html',
+    appId  : '213622',
+    channelUrl : 'http://35.161.251.23/pages/channel.html',
     player : {
       container : 'player',
       playlist: true,
@@ -212,10 +236,32 @@
   }
 
   $("#deezer_connect").click(function(){
-      var url = window.location.href;
-      var externalLoginWindow = "https://connect.deezer.com/oauth/auth.php?app_id=211642&redirect_uri=" + url + "&perms=basic_access,email";
-      window.location = externalLoginWindow;
+
+      //if we want to use deezer's login
+      //var url = window.location.href;
+      //var domain = "http://35.161.251.23/playlists/<%= @playlist.id %>"
+      //var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
+      //window.location = deezerConnectUrl;
+      //deezerLogin();
+
+      window.open("http://www.deezer.com/");
+
     });
+
+  function deezerLogin() {
+    DZ.login(function (response) {
+        if (response.authResponse) {
+            console.log('Welcome!  Fetching your information.... ');
+            DZ.api('/user/me', function (response) {
+                console.log('Good to see you, ' + response.name + '.');
+            });
+            userToken = response.authResponse.accessToken;
+        } else {
+            console.log('User cancelled login or did not fully authorize.');
+        }
+    }, { perms: 'email, manage_library' });
+};
+
 
   //queueing/waiting list logic
 	//grab the user id to validate user
