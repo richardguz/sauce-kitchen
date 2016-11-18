@@ -21,6 +21,7 @@ class UsersController < ApplicationController
     end
     @followers = @user.followers
     @following = @user.following
+    fresh_when([@user.followers.all, @user.following.all, @user.avatar_updated_at])
 	end
 
   def follow(other_user)

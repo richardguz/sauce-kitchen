@@ -1,5 +1,6 @@
 class LocationPlaylistsController < ApplicationController
 	def show
+		fresh_when([Playlist.all])
 		@ip = request.remote_ip
 		@city = Geocoder.search(@ip)[0].data["city"]
 
