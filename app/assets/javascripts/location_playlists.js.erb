@@ -10,8 +10,7 @@ var playlistMarkers = [];
 var showPlaylistMarkers = true;
 var showLocationMarkers = true;
 
-function initializeMap() {
-
+function initializeMap(city) {
 	infoWindow = new google.maps.InfoWindow({
     content: ""
 	});
@@ -19,7 +18,7 @@ function initializeMap() {
     content: ""
 	});
 	map = new google.maps.Map(document.getElementById('map'), {
-	  center: {lat: -34.06898, lng: -118.44292},
+	  center: {lat: 34.0522342, lng: -118.2436849},
 	  zoom: 18
 	});
 	locationIcon = {
@@ -51,31 +50,19 @@ function initializeMap() {
     }
     generateCoordinates(places);
   });
+
+  $( "#pac-input" ).val(city);
+  google.maps.event.trigger(input, "focus");
+  google.maps.event.trigger(input, "keydown", {
+    keyCode: 13
+  });
+  map.setZoom(10);
+
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
-    var address = getParameterByName('address');
-    if (address) {
-      generateCoordinates(address);
-      return;
-    }
     navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      $('#latitude').val(position.coords.latitude);
-      $('#longitude').val(position.coords.longitude);
-      map.setCenter(pos);
-      locationInfoWindow.setPosition(pos);
-			locationInfoWindow.setContent('<div class="title">' +
-												'<h2>Your Current Location</h2>' +
-												'</div>' +
-												'<div class="notLocation">' +
-												'Not your location? You can enter your address here to get more accurate results.' +
-												'</div>');
-
-      locationMarker.setPosition(pos);
-      locationInfoWindow.open(map, locationMarker);
+      setLocation(position.coords.latitude, position.coords.longitude)
+      map.setZoom(18);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -86,18 +73,14 @@ function initializeMap() {
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  var address = getCookie("address")
-  if (address) {
-    generateCoordinates(address);
-    return;
-  }
-  var marker = new google.maps.Marker({
+  /*var marker = new google.maps.Marker({
     position: pos,
     map: map
   });
+
   infoWindow.setPosition(pos);
   infoWindow.setContent('The geolocation failed. Please Enter your address to see playlists near you.');
-  infoWindow.open(map, marker);
+  infoWindow.open(map, marker);*/
 }
 
 function addPlaylistMarkers(playlists) {
@@ -188,6 +171,26 @@ function generateCoordinates(place) {
                     '<h2>Your Current Location</h2>' +
                     '</div>');
   locationInfoWindow.open(map, locationMarker);
+}
+
+function setLocation(lat, long) {
+  var pos = {
+        lat: lat,
+        lng: long
+      };
+      $('#latitude').val(lat);
+      $('#longitude').val(long);
+      map.setCenter(pos);
+      locationInfoWindow.setPosition(pos);
+      locationInfoWindow.setContent('<div class="title">' +
+                        '<h2>Your Current Location</h2>' +
+                        '</div>' +
+                        '<div class="notLocation">' +
+                        'Not your location? You can enter your address here to get more accurate results.' +
+                        '</div>');
+
+      locationMarker.setPosition(pos);
+      locationInfoWindow.open(map, locationMarker);
 }
 
 function getParameterByName(name, url) {
