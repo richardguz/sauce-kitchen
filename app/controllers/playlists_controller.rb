@@ -3,21 +3,22 @@ require 'json'
 
 class PlaylistsController < ApplicationController
   def show
-  	if (@playlist = Playlist.find_by(id: params[:id]))
-      @likes = Like.where(:playlist_id => params[:id]).count
-      @isLiked = false
-      if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
-        @isLiked = true
-      end
-      @isPlaying = @playlist.playing
-      @user = current_user
-      @playlist_owner = @playlist.user
-      if @playlist.private && @user != @playlist_owner
-        flash[:info] = "The playlist you tried to access is private"
-        redirect_to root_url
-      end
+    if (@playlist = $redis.get(params[:id]))
+  	elsif (@playlist = Playlist.find_by(id: params[:id]))
     else
       flash[:warning] = "The playlist you tried to access no longer exists"
+      redirect_to root_url
+    end
+    @likes = Like.where(:playlist_id => params[:id]).count
+    @isLiked = false
+    if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
+      @isLiked = true
+    end
+    @isPlaying = @playlist.playing
+    @user = current_user
+    @playlist_owner = @playlist.user
+    if @playlist.private && @user != @playlist_owner
+      flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
     end 
   end
