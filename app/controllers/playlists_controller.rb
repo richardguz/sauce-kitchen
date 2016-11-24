@@ -4,20 +4,42 @@ require 'json'
 class PlaylistsController < ApplicationController
   def show
     if (@playlist = $redis.get(params[:id]))
+      @playlist = JSON.parse(@playlist)
+      puts "got from redis"
   	elsif (@playlist = Playlist.find_by(id: params[:id]))
+      puts "print got from db, put into redis"
+      d = {
+            id: @playlist.id, 
+            title: @playlist.title,
+            user_id: @playlist.user_id,
+            created_at: @playlist.created_at,
+            updated_at: @playlist.updated_at,
+            private: @playlist.private,
+            playing: @playlist.playing,
+            psongs: @playlist.psongs
+          }
+        d = d.to_json
+        d = JSON.parse(d)
+        puts d
+        d["psongs"].length.times do |i|
+          d["psongs"][i][:song] = JSON.parse(@playlist.psongs[i].song.to_json)
+          d["psongs"][i][:votes] = JSON.parse(@playlist.psongs[i].votes.to_json)
+        end
+      $redis.set(params[:id], d.to_json)
     else
+      # TODO: Doesn't flash warning
       flash[:warning] = "The playlist you tried to access no longer exists"
-      redirect_to root_url
+      return redirect_to root_url
     end
     @likes = Like.where(:playlist_id => params[:id]).count
     @isLiked = false
     if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
       @isLiked = true
     end
-    @isPlaying = @playlist.playing
+    @isPlaying = @playlist[:playing]
     @user = current_user
-    @playlist_owner = @playlist.user
-    if @playlist.private && @user != @playlist_owner
+    @playlist_owner = @playlist[:user]
+    if @playlist[:private] && @user != @playlist_owner
       flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
     end 

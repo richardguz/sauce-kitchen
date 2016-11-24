@@ -1,5 +1,5 @@
 <div class="center">
-  <h1 id="title" class="nds"><%= @playlist.title %></h1>
+  <h1 id="title" class="nds"><%= @playlist[:title] %></h1>
   <% if @isLiked %>
     <%= image_tag "redheart.png", id: "heart" %>
   <% else %>
@@ -61,7 +61,7 @@
   $(document).ready(function(){
     $("#heart").click(function(){
       console.log("Heart clicked");
-      clickHeart(<%= @playlist.id %>);
+      clickHeart(<%= @playlist[:id] %>);
     }); 
 
 
@@ -88,11 +88,11 @@
       </tr>
     </thead>
     <tbody id="queuedSongsList">
-      <% @playlist.psongs.each do |psong| %>
-      <% if psong.queued && !psong.played %>
-        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
-          <td><%= psong.song.name %></td>
-          <td><%= psong.song.artist %></td>
+      <% @playlist["psongs"].each do |psong| %>
+      <% if psong["queued"] && !psong["played"] %>
+        <tr upvotes="<%=psong["upvotes"]%>" psongid="<%=psong['id']%>" upvoted="<% if (@user && did_user_upvote?(@user)%>true<%else%>false<%end%>">
+          <td><%= psong["song"]["name"] %></td>
+          <td><%= psong["song"]["artist"] %></td>
           <td>
             <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
               <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
@@ -121,10 +121,10 @@
       </tr>
     </thead>
     <tbody id="waitingSongsList">
-      <% @playlist.psongs.each do |psong| %>
-      <% if !psong.queued && !psong.played %>
+      <% @playlist["psongs"].each do |psong| %>
+      <% if !psong[:queued] && !psong[:played] %>
         <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
-          <td><%= psong.song.name %></td>
+          <td><%= psong[:song].name %></td>
           <td><%= psong.song.artist %></td>
           <td>
             <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
@@ -149,7 +149,7 @@
 	function onPlayerLoaded() {
     console.log("PLAYER LOADED")
     DZ.Event.suscribe('track_end', function(arg){
-    	playNextSong("<%= @playlist.id %>");
+    	playNextSong("<%= @playlist[:id] %>");
     });
 
 
@@ -168,16 +168,16 @@
 	    $("#player").show();
 	    $("#reset").removeClass('hidden');
 	    $("#activate").addClass('hidden');
-      togglePlaylistPlaying("<%= @playlist.id %>", true);
-	    playNextSong("<%= @playlist.id %>");
+      togglePlaylistPlaying("<%= @playlist[:id] %>", true);
+	    playNextSong("<%= @playlist[:id] %>");
 		});
 
 		$("#reset").click(function(){
 	    $("#player").hide();
 	    $("#activate").removeClass('hidden');
 	    $("#reset").addClass('hidden');
-      resetPlaylist("<%= @playlist.id %>");
-	    togglePlaylistPlaying("<%= @playlist.id %>", false);
+      resetPlaylist("<%= @playlist[:id] %>");
+	    togglePlaylistPlaying("<%= @playlist[:id] %>", false);
 	    DZ.player.pause();
 		});
   }
@@ -206,7 +206,7 @@
     	rowEl.attr("upvotes", upvotes);
       rowEl.attr("upvoted", "true");
     	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
-    	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + psongid, function(){
+    	$.get('/playlists/' + "<%= @playlist[:id] %>" + "/upvote/" + psongid, function(){
     		console.log("request succesful");
     	});
     }
@@ -239,7 +239,7 @@
 
       //if we want to use deezer's login
       //var url = window.location.href;
-      //var domain = "http://35.161.251.23/playlists/<%= @playlist.id %>"
+      //var domain = "http://35.161.251.23/playlists/<%= @playlist[:id] %>"
       //var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
       //window.location = deezerConnectUrl;
       //deezerLogin();
@@ -265,7 +265,7 @@
 
   //queueing/waiting list logic
 	//grab the user id to validate user
-	var id = "<%= @playlist.id %>";
+	var id = "<%= @playlist[:id] %>";
 	var uid = "<%= session[:user_id] %>";
   //if no user is logged in... 
   if (!uid)
