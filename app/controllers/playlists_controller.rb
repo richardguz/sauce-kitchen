@@ -203,6 +203,26 @@ class PlaylistsController < ApplicationController
         psong.update_column(:queued, false)
       end
     end
+    @playlist = playlist
+    d = {
+          id: @playlist.id, 
+          title: @playlist.title,
+          user_id: @playlist.user_id,
+          created_at: @playlist.created_at,
+          updated_at: @playlist.updated_at,
+          private: @playlist.private,
+          playing: @playlist.playing,
+          psongs: @playlist.psongs,
+          songs: @playlist.songs
+        }
+    d = d.to_json
+    d = JSON.parse(d)
+    d["psongs"].length.times do |i|
+      d["psongs"][i][:song] = JSON.parse(@playlist.psongs[i].song.to_json)
+      d["psongs"][i][:votes] = JSON.parse(@playlist.psongs[i].votes.to_json)
+    end
+    @playlist = d
+    $redis.set(playlist_id, d.to_json)
   end
 
   def like
