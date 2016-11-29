@@ -5,9 +5,7 @@ class PlaylistsController < ApplicationController
   def show
     if (@playlist = $redis.get(params[:id]))
       @playlist = JSON.parse(@playlist)
-      puts "got from redis"
   	elsif (@playlist = Playlist.find_by(id: params[:id]))
-      puts "print got from db, put into redis"
       d = {
             id: @playlist.id, 
             title: @playlist.title,
@@ -21,7 +19,6 @@ class PlaylistsController < ApplicationController
           }
         d = d.to_json
         d = JSON.parse(d)
-        puts d
         d["psongs"].length.times do |i|
           d["psongs"][i][:song] = JSON.parse(@playlist.psongs[i].song.to_json)
           d["psongs"][i][:votes] = JSON.parse(@playlist.psongs[i].votes.to_json)
@@ -118,35 +115,27 @@ class PlaylistsController < ApplicationController
   end
 
   def next_song
-    puts("HEEEY 1")
     if (playlist = Playlist.find_by(id: params[:id]))
       #check if the requester is owner of playlist
-      puts("HEEEY 2")
       if (isOwner(current_user, playlist))
         #check for songs on queued list (grabs one with most upvotes)
-        puts("HEEEY 3")
         psong = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last : nil
         if (!psong)
-          puts("HEEEY 4")
           #if no songs left on the queue
           psong = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last
         end
         if (!psong)
-          puts("HEEEY 5")
           #if no songs in waiting queue
           render :json => nil 
         else
-          puts("HEEEY 6")
           #if song found on a queue
           psong.update(played: true)
           render :json => psong.song
         end
       else
-        puts("HEEEY 7")
         redirect_to playlist
       end
     else
-      puts("HEEEY 8")
       redirect_to root_url
     end
 
