@@ -1,4 +1,4 @@
-<% if (@isPlaying && @user == @playlist_owner) %>
+<% if (@isPlaying && @user.id == @playlist_owner) %>
 	<div id="dz-root"></div>
 	<div id="player" style="width:100%; padding-top:10px;" align="center"></div>
 <% else %>

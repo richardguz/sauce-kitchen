@@ -41,6 +41,7 @@ class PlaylistsController < ApplicationController
     @isPlaying = @playlist["playing"]
     @user = current_user
     @playlist_owner = @playlist["user_id"]
+    
     if @playlist["private"] && @user != @playlist_owner
       flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
