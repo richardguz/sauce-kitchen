@@ -1,12 +1,12 @@
 <div class="center">
-  <h1 id="title" class="nds"><%= @playlist[:title] %></h1>
+  <h1 id="title" class="nds"><%= @playlist["title"] %></h1>
   <% if @isLiked %>
     <%= image_tag "redheart.png", id: "heart" %>
   <% else %>
     <%= image_tag "clearheart.png", id: "heart" %>
   <% end %>
   <div id="nlikes"><%= @likes %> likes</div>
-  <% if @user == @playlist_owner %>
+  <% if @user.id == @playlist_owner %>
     <button id="deezer_connect" class="btn btn-success">Connect to Deezer</button>
     <% if @isPlaying %>
       <button id="activate" class="btn btn-success hidden">Activate Playlist</button>
@@ -61,7 +61,7 @@
   $(document).ready(function(){
     $("#heart").click(function(){
       console.log("Heart clicked");
-      clickHeart(<%= @playlist[:id] %>);
+      clickHeart(<%= @playlist["id"] %>);
     }); 
 
 
@@ -77,7 +77,7 @@
     //getDeezerToken();
   });
 </script>
-<h3 style="padding-top:10px;">Queue<% if @user == @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Add Song</button><%end%></h3>
+<h3 style="padding-top:10px;">Queue<% if @user.id == @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Add Song</button><%end%></h3>
 <div id="queuedSongs">
   <table class="table">
     <thead>
@@ -90,14 +90,14 @@
     <tbody id="queuedSongsList">
       <% @playlist["psongs"].each do |psong| %>
       <% if psong["queued"] && !psong["played"] %>
-        <tr upvotes="<%=psong["upvotes"]%>" psongid="<%=psong['id']%>" upvoted="<% if (@user && did_user_upvote?(@user)%>true<%else%>false<%end%>">
+        <tr upvotes="<%=psong["upvotes"]%>" psongid="<%=psong["id"]%>" upvoted="<% if (@user && did_user_upvote?(@user, psong))%>true<%else%>false<%end%>">
           <td><%= psong["song"]["name"] %></td>
           <td><%= psong["song"]["artist"] %></td>
           <td>
             <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
-              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong["upvotes"] %></span>
             </button>
-            <% if @user == @playlist_owner %>
+            <% if @user.id == @playlist_owner %>
               <button class="demote-button btn btn-danger" onclick="demoteClick(this);">
                 <span>Demote</span>
               </button>
@@ -110,7 +110,7 @@
   </table>
 </div>
 
-<h3>Waiting to be Queued<% if @user != @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Suggest Song</button><%end%></h3>
+<h3>Waiting to be Queued<% if @user.id != @playlist_owner %>  - <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSongModal">Suggest Song</button><%end%></h3>
 <div id="waitingSongs">
   <table class="table">
     <thead>
@@ -122,15 +122,15 @@
     </thead>
     <tbody id="waitingSongsList">
       <% @playlist["psongs"].each do |psong| %>
-      <% if !psong[:queued] && !psong[:played] %>
-        <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
-          <td><%= psong[:song].name %></td>
-          <td><%= psong.song.artist %></td>
+      <% if !psong["queued"] && !psong["played"] %>
+        <tr upvotes="<%=psong["upvotes"]%>" psongid="<%=psong["id"]%>" upvoted="<% if (@user && did_user_upvote?(@user, psong))%>true<%else%>false<%end%>">
+          <td><%= psong["song"]["name"] %></td>
+          <td><%= psong["song"]["artist"] %></td>
           <td>
             <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
-              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
+              <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong["upvotes"] %></span>
             </button>
-            <% if @user == @playlist_owner %>
+            <% if @user.id == @playlist_owner %>
               <button class="promote-button btn btn-success" onclick="promoteClick(this);">
                 <span>Promote</span>
               </button>
@@ -149,7 +149,7 @@
 	function onPlayerLoaded() {
     console.log("PLAYER LOADED")
     DZ.Event.suscribe('track_end', function(arg){
-    	playNextSong("<%= @playlist[:id] %>");
+    	playNextSong("<%= @playlist["id"] %>");
     });
 
 
@@ -168,16 +168,16 @@
 	    $("#player").show();
 	    $("#reset").removeClass('hidden');
 	    $("#activate").addClass('hidden');
-      togglePlaylistPlaying("<%= @playlist[:id] %>", true);
-	    playNextSong("<%= @playlist[:id] %>");
+      togglePlaylistPlaying("<%= @playlist["id"] %>", true);
+	    playNextSong("<%= @playlist["id"] %>");
 		});
 
 		$("#reset").click(function(){
 	    $("#player").hide();
 	    $("#activate").removeClass('hidden');
 	    $("#reset").addClass('hidden');
-      resetPlaylist("<%= @playlist[:id] %>");
-	    togglePlaylistPlaying("<%= @playlist[:id] %>", false);
+      resetPlaylist("<%= @playlist["id"] %>");
+	    togglePlaylistPlaying("<%= @playlist["id"] %>", false);
 	    DZ.player.pause();
 		});
   }
@@ -201,12 +201,13 @@
   	var upvotes = parseInt(rowEl.attr("upvotes"));
     var upvoted = rowEl.attr("upvoted");
   	var psongid = rowEl.attr("psongid");
+    console.log(psongid)
     if (upvoted == "false"){
     	upvotes += 1;
     	rowEl.attr("upvotes", upvotes);
       rowEl.attr("upvoted", "true");
     	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
-    	$.get('/playlists/' + "<%= @playlist[:id] %>" + "/upvote/" + psongid, function(){
+    	$.get('/playlists/' + "<%= @playlist["id"] %>" + "/upvote/" + psongid, function(){
     		console.log("request succesful");
     	});
     }
@@ -219,7 +220,7 @@
     console.log("demote clicked");
     var rowEl = $(element).parent().parent()
     var psongid = rowEl.attr("psongid");
-    $.get('/demote/' + psongid, function(){
+    $.get('/demote/' + psongid + '/' + "<%= @playlist["id"] %>", function(){
         console.log("demote request successful");
       });
     rowEl.remove();
@@ -229,7 +230,7 @@
     console.log("promote clicked")
     var rowEl = $(element).parent().parent()
     var psongid = rowEl.attr("psongid");
-    $.get('/promote/' + psongid, function(){
+    $.get('/promote/' + psongid + '/' + "<%= @playlist["id"] %>", function(){
         console.log("promote request successful");
       });
     rowEl.remove();
@@ -239,7 +240,7 @@
 
       //if we want to use deezer's login
       //var url = window.location.href;
-      //var domain = "http://35.161.251.23/playlists/<%= @playlist[:id] %>"
+      //var domain = "http://35.161.251.23/playlists/<%= @playlist["id"] %>"
       //var deezerConnectUrl = "https://connect.deezer.com/oauth/auth.php?app_id=213622&redirect_uri=" + domain + "&perms=basic_access,email&response_type=token";
       //window.location = deezerConnectUrl;
       //deezerLogin();
@@ -265,7 +266,7 @@
 
   //queueing/waiting list logic
 	//grab the user id to validate user
-	var id = "<%= @playlist[:id] %>";
+	var id = "<%= @playlist["id"] %>";
 	var uid = "<%= session[:user_id] %>";
   //if no user is logged in... 
   if (!uid)

@@ -1,9 +1,10 @@
 module PlaylistsHelper
-	def did_user_upvote?(user)
-		puts user.id
-		puts "HEY"
-		1
+	def did_user_upvote?(user, psong)
+		psong["votes"].each do |vote|
+			if vote["user_id"] == user.id
+				return true
+			end
+		end
+		false
 	end
 end
-
-# <!-- <tr upvotes="<%=psong["upvotes"]%>" psongid="<%=psong['id']%>" upvoted="<% if (@user && psong["votes"].where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>"> -->

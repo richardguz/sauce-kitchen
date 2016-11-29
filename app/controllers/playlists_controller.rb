@@ -16,7 +16,8 @@ class PlaylistsController < ApplicationController
             updated_at: @playlist.updated_at,
             private: @playlist.private,
             playing: @playlist.playing,
-            psongs: @playlist.psongs
+            psongs: @playlist.psongs,
+            songs: @playlist.songs
           }
         d = d.to_json
         d = JSON.parse(d)
@@ -25,6 +26,7 @@ class PlaylistsController < ApplicationController
           d["psongs"][i][:song] = JSON.parse(@playlist.psongs[i].song.to_json)
           d["psongs"][i][:votes] = JSON.parse(@playlist.psongs[i].votes.to_json)
         end
+        @playlist = d
       $redis.set(params[:id], d.to_json)
     else
       # TODO: Doesn't flash warning
@@ -36,10 +38,10 @@ class PlaylistsController < ApplicationController
     if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
       @isLiked = true
     end
-    @isPlaying = @playlist[:playing]
+    @isPlaying = @playlist["playing"]
     @user = current_user
-    @playlist_owner = @playlist[:user]
-    if @playlist[:private] && @user != @playlist_owner
+    @playlist_owner = @playlist["user_id"]
+    if @playlist["private"] && @user != @playlist_owner
       flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
     end 
@@ -86,24 +88,31 @@ class PlaylistsController < ApplicationController
   end
 
   def poll
-    playlist = Playlist.find_by(id: params[:id])
-    psongs = playlist.psongs
-    psong_obj = psongs.map do |psong|
-      votes = psong.votes
-      voted_user_ids = []
-      votes.each do |vote|
-        voted_user_ids << vote.user_id
+    if playlist = JSON.parse($redis.get(params[:id]))
+      psongs = playlist["psongs"]
+      playlist[:owner] = playlist["user_id"]
+      playlist["psongs"].each do |psong|
+        psong["voted_user_ids"] = []
+        psong["votes"].each do |vote|
+          psong["voted_user_ids"] = psong["voted_user_ids"] << vote["user_id"]
+        end
       end
-      {
-        :psong => psong,
-        :voted_user_ids => voted_user_ids
-      }
-    end
-    data = playlist ? { :title => playlist.title, 
+      data = playlist.to_json
+    elsif playlist = Playlist.find_by(id: params[:id])
+      psongs = playlist.psongs
+      psong_obj = psongs.map do |psong|
+        votes = psong.votes
+        voted_user_ids = []
+        votes.each do |vote|
+          voted_user_ids << vote.user_id
+        end
+      end
+      data = playlist ? { :title => playlist.title, 
                         :owner => playlist.user.id, 
                         :psongs => psong_obj,
                         :songs => playlist.songs } : nil
                         #do something like below to get the votes passed in
+    end
     render :json => data
   end
 
@@ -150,7 +159,23 @@ class PlaylistsController < ApplicationController
 
   def upvote
     #does playlist exist?
-    if (playlist = Playlist.find(params[:id]))
+    # /playlists/13/upvote/7
+    id = params[:id]
+    psongid = params[:psongid]
+    if (playlist = JSON.parse($redis.get(id)))
+      song = nil
+      playlist["psongs"].length.times do |i|
+        if (playlist["psongs"][i]["id"] == psongid.to_i)
+          song = playlist["psongs"][i]
+          song["upvotes"] = song["upvotes"] + 1
+          playlist["psongs"][i] = song
+          playlist["psongs"][i]["votes"] << {"id"=>-1, "created_at"=>"N/A", "updated_at"=>"N/A", "user_id"=>session[:user_id], "psong_id"=>psongid}
+          @playlist = playlist
+          $redis.set(id, playlist.to_json)
+          break
+        end
+      end
+    elsif (playlist = Playlist.find(params[id]))
       psong = Psong.find(params[:psongid])
       if (psong.votes.create(user_id: current_user.id))
         psong.update(upvotes: 1 + psong.upvotes)
@@ -213,7 +238,7 @@ class PlaylistsController < ApplicationController
   	end
 
     def isOwner(user, playlist)
-      return user.playlists.exists?(playlist.id)
+      return user.playlists.exists?(playlist["id"])
     end
 
     def deezer_song(id)
