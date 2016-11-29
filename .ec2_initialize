@@ -2,4 +2,4 @@ sudo yum install -y patch
 sudo yum install -y sqlite-devel
 sudo yum install -y ImageMagick
 sudo yum install -y redis
-redis-server config/redis.conf
+redis-server app/config/redis.conf
