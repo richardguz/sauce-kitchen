@@ -23,7 +23,7 @@ class PlaylistsController < ApplicationController
           d["psongs"][i][:song] = JSON.parse(@playlist.psongs[i].song.to_json)
           d["psongs"][i][:votes] = JSON.parse(@playlist.psongs[i].votes.to_json)
         end
-        @playlist = d
+        @playlist = JSON.parse(d.to_json)
       $redis.set(params[:id], d.to_json)
     else
       # TODO: Doesn't flash warning
