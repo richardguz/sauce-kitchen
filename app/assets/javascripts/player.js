@@ -1,14 +1,18 @@
 function playNextSong(pid){
+	console.log("Play Next Song");
   	$.get("/playlists/" + pid + "/next_song/json", function(song){
+  		console.log(song);
     	DZ.player.playTracks([song.deezer_id]);
   	});
   }
 
 function resetPlaylist(pid){
+console.log("Reset");
   $.get("/playlists/" + pid + "/reset_play_history", function(){});
 }
 
 function togglePlaylistPlaying(pid, value){
+	console.log("Toggle");
 	if (value) {
 		$.get("/playlists/" + pid + "/set_playing_true", function(){});
 	}
@@ -18,6 +22,7 @@ function togglePlaylistPlaying(pid, value){
 }
 
 function searchDeezer(searchString){
+	console.log("Search");
 	$.ajax({
     url: "https://api.deezer.com/search?q=" + searchString + "&output=jsonp" + "&callback=?",
     dataType: 'jsonp',

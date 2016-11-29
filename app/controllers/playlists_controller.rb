@@ -41,7 +41,7 @@ class PlaylistsController < ApplicationController
     @isPlaying = @playlist["playing"]
     @user = current_user
     @playlist_owner = @playlist["user_id"]
-    
+
     if @playlist["private"] && @user != @playlist_owner
       flash[:info] = "The playlist you tried to access is private"
       redirect_to root_url
@@ -118,27 +118,35 @@ class PlaylistsController < ApplicationController
   end
 
   def next_song
+    puts("HEEEY 1")
     if (playlist = Playlist.find_by(id: params[:id]))
       #check if the requester is owner of playlist
+      puts("HEEEY 2")
       if (isOwner(current_user, playlist))
         #check for songs on queued list (grabs one with most upvotes)
+        puts("HEEEY 3")
         psong = playlist ? playlist.psongs.where(played: false).where(queued: true).order(:upvotes).last : nil
         if (!psong)
+          puts("HEEEY 4")
           #if no songs left on the queue
           psong = playlist.psongs.where(played: false).where(queued: false).order(:upvotes).last
         end
         if (!psong)
+          puts("HEEEY 5")
           #if no songs in waiting queue
           render :json => nil 
         else
+          puts("HEEEY 6")
           #if song found on a queue
           psong.update(played: true)
           render :json => psong.song
         end
       else
+        puts("HEEEY 7")
         redirect_to playlist
       end
     else
+      puts("HEEEY 8")
       redirect_to root_url
     end
 
@@ -239,7 +247,8 @@ class PlaylistsController < ApplicationController
   	end
 
     def isOwner(user, playlist)
-      return user.playlists.exists?(playlist["id"])
+      # return user.playlists.exists?(playlist["id"])
+      return user["id"] == playlist["user_id"]
     end
 
     def deezer_song(id)

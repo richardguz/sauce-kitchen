@@ -1,7 +1,6 @@
 function pollPlaylist(pid, uid){
 	$.get("/playlists/json/" + pid, function(playlist){
 		//updates title of the playlist
-		console.log(playlist)
 		var songs = playlist["songs"];
 		var psongs = playlist["psongs"];
 		var isOwner = (uid == playlist['owner'].toString())
