@@ -206,7 +206,7 @@
     	rowEl.attr("upvotes", upvotes);
       rowEl.attr("upvoted", "true");
     	$(element).html("<span class='glyphicon glyphicon glyphicon-chevron-up'>" + upvotes + "</span>");
-    	$.get('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + psongid, function(){
+    	$.post('/playlists/' + "<%= @playlist.id %>" + "/upvote/" + psongid, function(){
     		console.log("request succesful");
     	});
     }
@@ -219,7 +219,7 @@
     console.log("demote clicked");
     var rowEl = $(element).parent().parent()
     var psongid = rowEl.attr("psongid");
-    $.get('/demote/' + psongid, function(){
+    $.post('/demote/' + psongid, function(){
         console.log("demote request successful");
       });
     rowEl.remove();
@@ -229,7 +229,7 @@
     console.log("promote clicked")
     var rowEl = $(element).parent().parent()
     var psongid = rowEl.attr("psongid");
-    $.get('/promote/' + psongid, function(){
+    $.post('/promote/' + psongid, function(){
         console.log("promote request successful");
       });
     rowEl.remove();
