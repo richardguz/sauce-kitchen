@@ -1,3 +1,10 @@
 sudo yum install -y patch
 sudo yum install -y sqlite-devel
 sudo yum install -y ImageMagick
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+sudo make install
+cd ..
+redis-server &
