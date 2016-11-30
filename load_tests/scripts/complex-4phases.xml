@@ -9,7 +9,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="ec2-35-164-243-164.us-west-2.compute.amazonaws.com" port="80" type="tcp"></server>
+    <server host="placeholderIP" port="80" type="tcp"></server>
   </servers>
 
 
@@ -17,7 +17,6 @@
     <arrivalphase phase="1" duration="30" unit="second">
       <users arrivalrate="1" unit="second"></users>
     </arrivalphase>
-    <!--
     <arrivalphase phase="2" duration="30" unit="second">
       <users arrivalrate="2" unit="second"></users>
     </arrivalphase>
@@ -27,7 +26,8 @@
     <arrivalphase phase="4" duration="30" unit="second">
       <users arrivalrate="8" unit="second"></users>
     </arrivalphase>
-    <arrivalphase phase="5" duration="30" unit="second">
+   <!-- 
+   <arrivalphase phase="5" duration="30" unit="second">
      <users arrivalrate="16" unit="second"></users>
    </arrivalphase>
    <arrivalphase phase="6" duration="30" unit="second">
@@ -44,8 +44,7 @@
    </arrivalphase>
    <arrivalphase phase="10" duration="30" unit="second">
      <users arrivalrate="512" unit="second"></users>
-   </arrivalphase>
-   -->
+   </arrivalphase>-->
   </load>
 
   <options>
@@ -119,13 +118,19 @@
       <thinktime value="2" random="true"></thinktime>
 
       <request subst="true">
-       <http url='/playlists/1/add_song/126602225/Champions' version='1.1' method='GET'></http>
+       <http url='/playlists/1/add_song/126602225/Champions' version='1.1' method='POST'></http>
       </request>
 
       <thinktime value="2" random="true"></thinktime>
 
       <request subst="true">
-       <http url='/playlists/1/add_song/126602225/Champions' version='1.1' method='GET'></http>
+       <http url='/playlists/1/add_song/98744588/Low' version='1.1' method='POST'></http>
+      </request>
+
+      <thinktime value="2" random="true"></thinktime>
+
+      <request subst="true">
+       <http url='/playlists/1/upvote/1' version='1.1' method='POST'></http>
       </request>
 
       <thinktime value="2" random="true"></thinktime>
