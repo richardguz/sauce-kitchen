@@ -4,8 +4,7 @@ class PsongsController < ApplicationController
 		if (psong = Psong.find(params[:id]))
 			if (psong.playlist.user == user)
 				psong.update_column(:queued, true)
-				if (plst = $redis.get(psong.playlist_id))
-
+				# if (plst = $redis.get(psong.playlist_id))
 			else
 				redirect_to root_url
 			end
@@ -27,11 +26,11 @@ class PsongsController < ApplicationController
 		end
 	end
 
-	private
-		def updateRedis(psong, value)
-			if (plst = $redis.get(psong.playlist_id))
-				plst = JSON.parse(plst)
-				plst["psongs"].length.times do |i|
+	# private
+	# 	def updateRedis(psong, value)
+	# 		if (plst = $redis.get(psong.playlist_id))
+	# 			plst = JSON.parse(plst)
+	# 			plst["psongs"].length.times do |i|
 
-				end
+	# 			end
 end
