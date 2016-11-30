@@ -3,20 +3,29 @@ require 'json'
 
 class PlaylistsController < ApplicationController
   def show
+    @isLiked = false
+    @likes = nil
+    uid = session[:user_id]
     if (plst = $redis.get(params[:id]))
       plst = JSON.parse(plst)
       @playlist = PlaylistDBHelper.new(plst)
+      @likes = @playlist.likes.length
+      @playlist.likes.each do |like|
+        if uid == like.user_id
+          @isLiked = true
+        end
+      end
   	elsif (@playlist = Playlist.find_by(id: params[:id]))
       c = PlaylistCacheHelper.new(@playlist)
       $redis.set(params[:id], c.to_json)
+      @likes = Like.where(:playlist_id => params[:id]).count
+      @isLiked = false
+      if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
+        @isLiked = true
+      end
     else
       flash[:warning] = "The playlist you tried to access no longer exists"
       redirect_to root_url
-    end
-    @likes = Like.where(:playlist_id => params[:id]).count
-    @isLiked = false
-    if (Like.where(user_id: session[:user_id], playlist_id: params[:id]).count != 0)
-      @isLiked = true
     end
     @isPlaying = @playlist.playing
     @user = current_user
@@ -65,6 +74,11 @@ class PlaylistsController < ApplicationController
     value = params[:value]
     @playlist = Playlist.find_by(id: params[:id])
     @playlist.update_attribute(:playing, value)
+    if (plst = $redis.get(params[:id]))
+      plst = JSON.parse(plst)
+      plst["playing"] = value
+      $redis.set(params[:id], plst.to_json)
+    end 
   end
 
   def poll
@@ -106,15 +120,19 @@ class PlaylistsController < ApplicationController
         end
         if (!psong)
           #if no songs in waiting queue
+          if ($redis.get(params[:id]))
+            plst = PlaylistCacheHelper.new(playlist)
+            $redis.set(params[:id], plst.to_json)
+          end
           render :json => nil 
         else
           #if song found on a queue
           psong.update(played: true)
+          if ($redis.get(params[:id]))
+            plst = PlaylistCacheHelper.new(playlist)
+            $redis.set(params[:id], plst.to_json)
+          end
           render :json => psong.song
-        end
-        if ($redis.get(params[:id]))
-          plst = PlaylistCacheHelper.new(playlist)
-          $redis.set(params[:id], plst.to_json)
         end
       else
         redirect_to playlist
@@ -213,14 +231,29 @@ class PlaylistsController < ApplicationController
           :url => ActionController::Base.helpers.asset_path("clearheart.png"),
           :n_likes => n_likes
         }
+        if (plst = $redis.get(params[:id]))
+          plst = JSON.parse(plst)
+          plst["likes"].length.times do |i|
+            if plst["likes"][i]["user_id"] == session[:user_id]
+              plst["likes"].delete_at(i)
+              break
+            end
+          end
+          $redis.set(params[:id], plst.to_json)
+        end
         render :json => ret
       else
-        Like.create(user_id: session[:user_id], playlist_id: params[:id])
+        lke = Like.create(user_id: session[:user_id], playlist_id: params[:id])
         n_likes = Like.where(:playlist_id => params[:id]).count
         ret = {
           :url => ActionController::Base.helpers.asset_path("redheart.png"),
           :n_likes => n_likes
         }
+        if (plst = $redis.get(params[:id]))
+          plst = JSON.parse(plst)
+          plst["likes"] << LikeCacheHelper.new(lke)
+          $redis.set(params[:id], plst.to_json)
+        end
         render :json => ret
       end
     else
@@ -244,6 +277,10 @@ class PlaylistsController < ApplicationController
       response = Net::HTTP.get(uri)
       return JSON.parse(response, symbolize_keys: true)
     end
+
+    def didLike(user_id, like_user_id)
+      return user_id == like_user_id
+    end
 end
 
 class PlaylistCacheHelper
@@ -259,6 +296,7 @@ class PlaylistCacheHelper
     @psongs = createPsongs(playlist.psongs)
     @songs = createSongs(playlist.songs)
     @user = UserCacheHelper.new(playlist.user)
+    @likes = createLikes(playlist.likes)
   end
   attr_reader :id
   attr_reader :title
@@ -271,6 +309,16 @@ class PlaylistCacheHelper
   attr_reader :psongs
   attr_reader :songs
   attr_reader :user
+  attr_reader :likes
+
+  def createLikes(likes)
+    ret = []
+    likes.each do |like|
+      lke = LikeDBHelper.new(like)
+      ret << lke
+    end
+    return ret
+  end
 
   private
     def createPsongs(psongs)
@@ -290,6 +338,22 @@ class PlaylistCacheHelper
       end
       return ret
     end
+end
+
+class LikeCacheHelper
+  def initialize(like)
+    @id = like.id
+    @created_at = like.created_at
+    @updated_at = like.updated_at
+    @user_id = like.user_id
+    @playlist_id = like.playlist_id
+  end
+
+  attr_reader :id
+  attr_reader :created_at
+  attr_reader :updated_at
+  attr_reader :user_id
+  attr_reader :playlist_id
 end
 
 class UserCacheHelper
@@ -414,6 +478,7 @@ class PlaylistDBHelper
     @psongs = createPsongs(playlist["psongs"])
     @songs = createSongs(playlist["songs"])
     @user = UserDBHelper.new(playlist["user"])
+    @likes = createLikes(playlist["likes"])
   end
   attr_reader :id
   attr_reader :title
@@ -426,6 +491,16 @@ class PlaylistDBHelper
   attr_reader :psongs
   attr_reader :songs
   attr_reader :user
+  attr_reader :likes
+
+  def createLikes(likes)
+    ret = []
+    likes.each do |like|
+      lke = LikeDBHelper.new(like)
+      ret << lke
+    end
+    return ret
+  end
 
   private
     def createPsongs(psongs)
@@ -445,6 +520,22 @@ class PlaylistDBHelper
       end
       return ret
     end
+end
+
+class LikeDBHelper
+  def initialize(like)
+    @id = like["id"]
+    @created_at = like["created_at"]
+    @updated_at = like["updated_at"]
+    @user_id = like["user_id"]
+    @playlist_id = like["playlist_id"]
+  end
+
+  attr_reader :id
+  attr_reader :created_at
+  attr_reader :updated_at
+  attr_reader :user_id
+  attr_reader :playlist_id
 end
 
 class UserDBHelper

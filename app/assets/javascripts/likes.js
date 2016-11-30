@@ -11,7 +11,6 @@
 
 function clickHeart(id) {
 	$.get( "/playlists/" + id + "/like", function(data) {
-		console.log(data)
 	  $("#heart").attr("src", data["url"]);
 	  $('#nlikes').html(data["n_likes"] + " likes");
 	}, "json");
