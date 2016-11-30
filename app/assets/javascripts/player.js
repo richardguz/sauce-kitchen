@@ -48,6 +48,7 @@ function addSongToWaiting(element){
 	var title = trEl.attr('title');
 
 	//make request to update in db
+	console.log("/playlists/" + getPlaylistId() + "/add_song/" + song_id + "/" + title);
 	$.post("/playlists/" + getPlaylistId() + "/add_song/" + song_id + "/" + title, function(){
 		console.log(title)
 		console.log("id: " + song_id)
