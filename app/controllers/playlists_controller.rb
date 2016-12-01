@@ -233,7 +233,7 @@ class PlaylistsController < ApplicationController
         song: rsong,
         votes: []
       }
-      if current_user.id == playlist["user_id"]
+      if current_user.id == playlist["user"]["id"]
         psong["queued"] = true
       end
       playlist["psongs"] << psong
