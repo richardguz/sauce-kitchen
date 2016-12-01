@@ -1,0 +1,2 @@
+Starting Tsung
+Log directory is: /home/ec2-user/.tsung/log/20161130-0837
