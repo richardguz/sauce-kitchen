@@ -169,16 +169,11 @@ class PlaylistsController < ApplicationController
         plst = JSON.parse(plst)
         plst = PlaylistDBHelper.new(plst)
         plst.psongs.length.times do |i|
-          puts(plst.psongs[i].id)
-          puts(params[:psongid])
           if plst.psongs[i].id == params[:psongid].to_i
             j = i
-            puts("IT HAPPENED")
             plst.psongs[i] = PsongCacheHelper.new(psong)
           end
         end
-        puts("PUUUTTING")
-        puts(plst.psongs[j])
         $redis.set(params[:id], plst.to_json)
       end
     else
@@ -204,8 +199,6 @@ class PlaylistsController < ApplicationController
       end
     else
       json_response = deezer_song(song_id) 
-      puts json_response
-      puts json_response['contributors']
       song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
       psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
       if (!is_logged_in || !isOwner(current_user, playlist))

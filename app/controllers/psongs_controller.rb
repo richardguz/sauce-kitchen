@@ -35,13 +35,8 @@ class PsongsController < ApplicationController
 			if (plst = $redis.get(psong.playlist_id))
 				plst = JSON.parse(plst)
 				plst["psongs"].length.times do |i|
-					puts(plst["psongs"][i]["id"])
-					puts(psong.id)
 					if plst["psongs"][i]["id"] == psong.id
-						puts("asuh")
-						puts(plst["psongs"][i])
 						plst["psongs"][i]["queued"] = value
-						puts(plst["psongs"][i])
 					end
 				end
 				$redis.set(psong.playlist_id, plst.to_json)
