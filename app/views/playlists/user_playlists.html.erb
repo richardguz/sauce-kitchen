@@ -1,7 +1,11 @@
 <h1 class="center"><%= @user.username %>'s Playlists</h1>
 <ul>
-	<% @playlists.each do |playlist| %>
-		<li> <%=link_to playlist.title, playlist %> </li>
-		<!-- <li> <%= playlist.title %> </li> -->
+	<% cache(cache_key_for_user_playlists_table) do %>
+		<% @playlists.each do |playlist| %>
+			<% cache(cache_key_for_user_playlists(playlist)) do %>
+				<li> <%=link_to playlist.title, playlist %> </li>
+				<!-- <li> <%= playlist.title %> </li> -->
+			<% end %>
+		<% end %>
 	<% end %>
 </ul>
