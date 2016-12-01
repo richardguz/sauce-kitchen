@@ -159,27 +159,27 @@ class PlaylistsController < ApplicationController
 
   def upvote
     #does playlist exist?
-    if (playlist = Playlist.find(params[:id]))
+    if (playlist = $redis.get(params[:id]))
+      vote = {
+        created_at: "N/A",
+        updated_at: "N/A",
+        id: -1,
+        user_id: current_user.id,
+        psong_id: params[:psongid]
+      }
+      playlist = JSON.parse(playlist)
+      playlist["psongs"].each do |psong|
+        if psong["id"] == params[:psongid].to_i
+          psong["votes"] << vote
+          psong["upvotes"] += 1
+          break
+        end
+      end
+      $redis.set(params[:id], playlist.to_json)
+    elsif (playlist = Playlist.find(params[:id]))
       psong = Psong.find(params[:psongid])
       if (psong.votes.create(user_id: current_user.id))
         psong.update(upvotes: 1 + psong.upvotes)
-      end
-      if (plst = $redis.get(params[:id]))
-        j = 0
-        plst = JSON.parse(plst)
-        plst = PlaylistDBHelper.new(plst)
-        plst.psongs.length.times do |i|
-          puts(plst.psongs[i].id)
-          puts(params[:psongid])
-          if plst.psongs[i].id == params[:psongid].to_i
-            j = i
-            puts("IT HAPPENED")
-            plst.psongs[i] = PsongCacheHelper.new(psong)
-          end
-        end
-        puts("PUUUTTING")
-        puts(plst.psongs[j])
-        $redis.set(params[:id], plst.to_json)
       end
     else
       redirect_to root_url 
@@ -205,8 +205,6 @@ class PlaylistsController < ApplicationController
         $redis.set(playlist_id, playa.to_json)
       end
     else
-      puts json_response
-      puts json_response['contributors']
       song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
       psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
       if (!is_logged_in || !isOwner(current_user, playlist))
@@ -223,7 +221,39 @@ class PlaylistsController < ApplicationController
   end
 
   def like
-    if (@playlist = Playlist.find_by(id: params[:id]))
+    if (@playlist = $redis.get(params[:id]))
+      @playlist = JSON.parse(@playlist)
+      del = false
+      n_likes = @playlist["likes"].length
+      n_likes.times do |i|
+        if @playlist["likes"][i]["user_id"] == session[:user_id]
+          @playlist["likes"].delete_at(i)
+          del = true
+          n_likes -= 1
+          break
+        end
+      end
+      if !del
+        like = {
+          created_at: "N/A",
+          updated_at: "N/A",
+          id: -1,
+          playlist_id: params[:id],
+          user_id: session[:user_id]
+        }
+        n_likes += 1
+        @playlist["likes"] << like
+        ur = ActionController::Base.helpers.asset_path("redheart.png")
+      else
+        ur = ActionController::Base.helpers.asset_path("clearheart.png")
+      end
+      ret = {
+          :url => ur,
+          :n_likes => n_likes
+        }
+      $redis.set(params[:id], @playlist.to_json)
+      render :json => ret
+    elsif (@playlist = Playlist.find_by(id: params[:id]))
       if (like_instance = Like.where(playlist_id: params[:id], user_id: session[:user_id])[0])
         like_instance.destroy
         n_likes = Like.where(:playlist_id => params[:id]).count
