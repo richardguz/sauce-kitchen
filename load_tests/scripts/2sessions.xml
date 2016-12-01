@@ -62,7 +62,7 @@
   </options>
 
   <sessions>
-    <session name="http-example" probability="25" type="ts_http">
+    <session name="add-songs" probability="25" type="ts_http">
       <setdynvars sourcetype="random_number" start="1000" end="9999999">
         <var name="rand"/>
       </setdynvars>
@@ -110,7 +110,7 @@
 
     </session>
 
-    <session name="http-example" probability="75" type="ts_http">
+    <session name="no-adds" probability="75" type="ts_http">
       <setdynvars sourcetype="random_number" start="1000" end="9999999">
         <var name="rand"/>
       </setdynvars>
