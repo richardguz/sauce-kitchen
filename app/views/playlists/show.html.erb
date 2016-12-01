@@ -91,23 +91,25 @@
       </tr>
     </thead>
     <tbody id="queuedSongsList">
-      <% @playlist.psongs.each do |psong| %>
-        <% cache(cache_key_for_psong(psong)) do %>
-          <% if psong.queued && !psong.played %>
-            <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
-              <td><%= psong.song.name %></td>
-              <td><%= psong.song.artist %></td>
-              <td>
-                <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
-                  <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-                </button>
-                <% if @user == @playlist_owner %>
-                  <button class="demote-button btn btn-danger" onclick="demoteClick(this);">
-                    <span>Demote</span>
+      <% cache(cache_key_for_playlist_queued) do %>
+        <% @playlist.psongs.each do |psong| %>
+          <% cache(cache_key_for_psong(psong)) do %>
+            <% if psong.queued && !psong.played %>
+              <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
+                <td><%= psong.song.name %></td>
+                <td><%= psong.song.artist %></td>
+                <td>
+                  <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
+                    <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
                   </button>
-                <%end%>
-              </td>
-            </tr>
+                  <% if @user == @playlist_owner %>
+                    <button class="demote-button btn btn-danger" onclick="demoteClick(this);">
+                      <span>Demote</span>
+                    </button>
+                  <%end%>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
@@ -126,23 +128,25 @@
       </tr>
     </thead>
     <tbody id="waitingSongsList">
-      <% @playlist.psongs.each do |psong| %>
-        <% cache(cache_key_for_psong_waiting(psong)) do %>
-          <% if !psong.queued && !psong.played %>
-            <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
-              <td><%= psong.song.name %></td>
-              <td><%= psong.song.artist %></td>
-              <td>
-                <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
-                  <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
-                </button>
-                <% if @user == @playlist_owner %>
-                  <button class="promote-button btn btn-success" onclick="promoteClick(this);">
-                    <span>Promote</span>
+      <% cache(cache_key_for_playlist_waiting) do %>
+        <% @playlist.psongs.each do |psong| %>
+          <% cache(cache_key_for_psong_waiting(psong)) do %>
+            <% if !psong.queued && !psong.played %>
+              <tr upvotes="<%=psong.upvotes%>" psongid="<%=psong.id%>" upvoted="<% if (@user && psong.votes.where(:user_id => @user.id).exists?)%>true<%else%>false<%end%>">
+                <td><%= psong.song.name %></td>
+                <td><%= psong.song.artist %></td>
+                <td>
+                  <button <% if @user %> onclick="upvoteClick(this);" <% else %> onclick="notLoggedInAlert();" <%end%> class="upvote-icon btn btn-default">
+                    <span class="glyphicon glyphicon glyphicon-chevron-up"><%= psong.upvotes %></span>
                   </button>
-                <%end%>
-              </td>
-            </tr>
+                  <% if @user == @playlist_owner %>
+                    <button class="promote-button btn btn-success" onclick="promoteClick(this);">
+                      <span>Promote</span>
+                    </button>
+                  <%end%>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

@@ -9,6 +9,14 @@ module PlaylistsHelper
 	def cache_key_for_user_player(user)
 		"userplayer-#{user.id}-#{user.updated_at}"
 	end
+	def cache_key_for_playlist_queued
+		max_stale = @playlist.psongs.max_by(&:updated_at).updated_at
+ 		"playlistqueued-#{@playlist.id}-#{max_stale}" 
+	end
+	def cache_key_for_playlist_waiting
+		max_stale = @playlist.psongs.max_by(&:updated_at).updated_at
+ 		"playlistwaiting-#{@playlist.id}-#{max_stale}" 
+	end
 
 	#User Playlist page
 	def cache_key_for_user_playlists(playlist)
