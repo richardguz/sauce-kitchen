@@ -1,0 +1,138 @@
+<?xml version="1.0"?><tsung loglevel="warning" dumptraffic="true" version="1.0">
+
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers="15000"/>
+  </clients>
+
+  <servers>
+    <server host="ec2-35-163-163-172.us-west-2.compute.amazonaws.com" port="80" type="tcp"/>
+  </servers>
+
+
+  <load>
+    <arrivalphase phase="1" duration="60" unit="second">
+      <users arrivalrate="1" unit="second"/>
+    </arrivalphase>
+    <arrivalphase phase="2" duration="60" unit="second">
+      <users arrivalrate="1.5" unit="second"/>
+    </arrivalphase>
+    <arrivalphase phase="3" duration="60" unit="second">
+      <users arrivalrate="2" unit="second"/>
+    </arrivalphase>
+    <arrivalphase phase="4" duration="60" unit="second">
+      <users arrivalrate="4" unit="second"/>
+    </arrivalphase>
+   <arrivalphase phase="5" duration="60" unit="second">
+     <users arrivalrate="6" unit="second"/>
+   </arrivalphase>
+   <arrivalphase phase="6" duration="60" unit="second">
+     <users arrivalrate="10" unit="second"/>
+   </arrivalphase>
+   <arrivalphase phase="7" duration="60" unit="second">
+     <users arrivalrate="16" unit="second"/>
+   </arrivalphase>
+   <arrivalphase phase="8" duration="60" unit="second">
+     <users arrivalrate="20" unit="second"/>
+   </arrivalphase>
+   <arrivalphase phase="9" duration="60" unit="second">
+     <users arrivalrate="25" unit="second"/>
+   </arrivalphase>
+   <arrivalphase phase="10" duration="60" unit="second">
+     <users arrivalrate="35" unit="second"/>
+   </arrivalphase>
+  </load>
+
+  <options>
+    <option name="global_ack_timeout" value="2000"/>
+
+    <option type="ts_http" name="user_agent">
+      <user_agent probability="100">Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4</user_agent>
+    </option>
+  </options>
+
+  <sessions>
+    <session name="http-example" probability="100" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1000" end="9999999">
+        <var name="rand"/>
+      </setdynvars>
+      <request>
+       <http url="/" version="1.1" method="GET"/>
+      </request>
+      
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+        <dyn_variable name="created_user_id" re="[Ll]ocation: http://.*/users/(.*)\r"/>
+        <http url="/signup" version="1.1" method="POST" contents="user%5Bemail%5D=user%%_rand%%%40gmail.com&amp;user%5Busername%5D=user%%_rand%%&amp;user%5Bpassword%5D=password&amp;user%5Bpassword_confirmation%5D=password&amp;commit=Signup%21"/>
+      </request>
+	
+      <thinktime value="2" random="true"/>
+
+      <request>
+       <http url="/playlists/new" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <dyn_variable name="created_playlist_id" re="[Ll]ocation: http://.*/playlists/(.*)\r"/>
+       <http url="/playlists" version="1.1" method="POST" contents="playlist%5Btitle%5D=playlist%%_rand%%&amp;playlist%5Bprivate%5D=0&amp;playlist%5Blatitude%5D=34.0678589&amp;playlist%5Blongitude%5D=-118.44915839999999&amp;commit=Create%21"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/%%_created_playlist_id%%" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/%%_created_playlist_id%%/like" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/user/%%_created_user_id%%/playlists" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/%%_created_playlist_id%%" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/%%_created_playlist_id%%/like" version="1.1" method="GET"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/1/add_song/126602225/Champions" version="1.1" method="POST"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/1/add_song/98744588/Low" version="1.1" method="POST"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request subst="true">
+       <http url="/playlists/1/upvote/1" version="1.1" method="POST"/>
+      </request>
+
+      <thinktime value="2" random="true"/>
+
+      <request>
+       <http url="/logout" version="1.1" method="POST" contents="_method=delete"/>
+      </request>
+
+    </session>
+  </sessions>
+</tsung>
