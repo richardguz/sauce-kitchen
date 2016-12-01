@@ -261,16 +261,6 @@ class PlaylistsController < ApplicationController
           :url => ActionController::Base.helpers.asset_path("clearheart.png"),
           :n_likes => n_likes
         }
-        if (plst = $redis.get(params[:id]))
-          plst = JSON.parse(plst)
-          plst["likes"].length.times do |i|
-            if plst["likes"][i]["user_id"] == session[:user_id]
-              plst["likes"].delete_at(i)
-              break
-            end
-          end
-          $redis.set(params[:id], plst.to_json)
-        end
         render :json => ret
       else
         lke = Like.create(user_id: session[:user_id], playlist_id: params[:id])
@@ -279,11 +269,6 @@ class PlaylistsController < ApplicationController
           :url => ActionController::Base.helpers.asset_path("redheart.png"),
           :n_likes => n_likes
         }
-        if (plst = $redis.get(params[:id]))
-          plst = JSON.parse(plst)
-          plst["likes"] << LikeCacheHelper.new(lke)
-          $redis.set(params[:id], plst.to_json)
-        end
         render :json => ret
       end
     else
