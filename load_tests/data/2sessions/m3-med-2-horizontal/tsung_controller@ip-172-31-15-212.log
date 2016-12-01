@@ -1,0 +1,55 @@
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+    ts_config_server:(5:<0.55.0>) Config server started, logdir is "/home/ec2-user/.tsung/log/20161201-0219"
+ 
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+              ts_mon:(5:<0.54.0>) starting monitor, global 
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+           ts_config:(5:<0.55.0>) Reading config file: updatedTest.xml
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+      ts_config_http:(4:<0.55.0>) Get user agent: 100 "Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4" 
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+           ts_config:(5:<0.55.0>) Session name for id 1 is "http-example"
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+           ts_config:(5:<0.55.0>) Session name for id 2 is "http-example"
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+    ts_config_server:(4:<0.55.0>) SYSINFO:Tsung version: 1.6.0
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+    ts_config_server:(4:<0.55.0>) SYSINFO:Erlang version: Erlang R14B04 (erts-5.8.5) [source] [64-bit] [rq:1] [async-threads:8] [kernel-poll:true]
+
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+    ts_config_server:(4:<0.55.0>) SYSINFO:System architecture x86_64-redhat-linux-gnu
+
+=INFO REPORT==== 1-Dec-2016::02:19:34 ===
+    ts_config_server:(4:<0.55.0>) SYSINFO:Current path: /usr/lib/erlang/lib/tsung-1.6.0/ebin/tsung.beam
+
+=INFO REPORT==== 1-Dec-2016::02:19:43 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 14.241 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:20:40 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 4.218 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:21:03 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 1.613 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:21:22 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 2.527 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:21:43 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 2.062 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:22:43 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 2.137 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:23:04 ===
+         ts_launcher:(4:<0.113.0>) Need to wait 0.815 sec before changing phase, going to sleep
+
+=INFO REPORT==== 1-Dec-2016::02:23:45 ===
+         ts_launcher:(4:<0.113.0>) Phase duration exceeded, more than 20% (23.1%) of users were not launched in time (591 users), tsung may be overloaded !
