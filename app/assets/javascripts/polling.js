@@ -14,6 +14,7 @@ function pollPlaylist(pid, uid){
 
 		//to replace the dynaspan functionality
 		$('#title').text(playlist['title']);
+		$('#current_song').text(playlist['current_song_title'] + ' - ' + playlist['current_song_artist']);
 
 		//updates the songs and how they're displayed
 		for (j = 0; j < songs.length; j++){

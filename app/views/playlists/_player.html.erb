@@ -1,6 +1,12 @@
 <% if (@isPlaying && @user == @playlist_owner) %>
 	<div id="dz-root"></div>
 	<div id="player" style="width:100%; padding-top:10px;" align="center"></div>
+<% elsif (@isPlaying) %>
+	<div id="current_song" class="center">
+		<h3><% @playlist.current_song_title %> - <% @playlist.current_song_artist %></h3>
+	</div>
+	<div hidden id="dz-root"></div>
+	<div hidden id="player" style="width:100%; padding-top:10px;" align="center"></div>
 <% else %>
 	<div hidden id="dz-root"></div>
 	<div hidden id="player" style="width:100%; padding-top:10px;" align="center"></div>

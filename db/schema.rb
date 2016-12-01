@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161031233059) do
+ActiveRecord::Schema.define(version: 20161201203643) do
 
   create_table "likes", force: :cascade do |t|
     t.datetime "created_at",  null: false
@@ -22,12 +22,14 @@ ActiveRecord::Schema.define(version: 20161031233059) do
   create_table "playlists", force: :cascade do |t|
     t.string   "title"
     t.integer  "user_id"
-    t.datetime "created_at",                                           null: false
-    t.datetime "updated_at",                                           null: false
-    t.boolean  "private",                              default: false
-    t.boolean  "playing",                              default: false
-    t.decimal  "latitude",   precision: 15, scale: 10, default: "0.0"
-    t.decimal  "longitude",  precision: 15, scale: 10, default: "0.0"
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
+    t.boolean  "private",                                       default: false
+    t.boolean  "playing",                                       default: false
+    t.decimal  "latitude",            precision: 15, scale: 10, default: "0.0"
+    t.decimal  "longitude",           precision: 15, scale: 10, default: "0.0"
+    t.string   "current_song_title"
+    t.string   "current_song_artist"
   end
 
   create_table "psongs", force: :cascade do |t|

@@ -100,6 +100,8 @@ class PlaylistsController < ApplicationController
         else
           #if song found on a queue
           psong.update(played: true)
+          playlist.update(current_song_title: psong.song.name)
+          playlist.update(current_song_artist: psong.song.artist)
           render :json => psong.song
         end
       else
