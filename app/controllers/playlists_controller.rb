@@ -188,34 +188,72 @@ class PlaylistsController < ApplicationController
 
   def add_song
     song_id = params[:sid]
-    playlist_id = params[:pid]   
-    playlist = Playlist.find(playlist_id)
-    if (song = Song.find_by(deezer_id: song_id))
-      psong = Psong.create(song_id: song.id, playlist_id: playlist_id)
-      if (!is_logged_in || !isOwner(current_user, playlist))
-        psong.update_column(:queued, false)
+    playlist_id = params[:pid]
+    if (playlist = $redis.get(playlist_id))
+      playlist = JSON.parse(playlist)
+      json_response = deezer_song(song_id)
+      if (newid = $redis.get(-7))
+        newid = newid.to_i
+        $redis.set(-7, newid+1)
+      else
+        newid = 10000
+        $redis.set(-7, newid+1)
       end
-      if (plst = $redis.get(playlist_id))
-        plst = JSON.parse(plst)
-        playa = PlaylistDBHelper.new(plst)
-        playa.songs << SongCacheHelper.new(song)
-        playa.psongs << PsongCacheHelper.new(psong)
-        $redis.set(playlist_id, playa.to_json)
+      rsong = nil
+      found = false
+      playlist["songs"].each do |song|
+        if (song["deezer_id"] == song_id)
+          found = true
+          rsong = song
+        end
+      end
+      if !found
+        rsong = {
+          id: newid,
+          name: json_response['title'],
+          artist: json_response['contributors'].first['name'],
+          deezer_id: song_id,
+          created_at: "N/A",
+          updated_at: "N/A",
+          url: nil,
+          album: nil,
+          cover_art_url: nil
+        }
+        playlist["songs"] << rsong
+      end
+      psong = {
+        id: newid,
+        playlist_id: playlist_id,
+        song_id: rsong["id"],
+        created_at: "N/A",
+        updated_at: "N/A",
+        upvotes: 0,
+        queued: false,
+        played: false,
+        song: rsong,
+        votes: []
+      }
+      if current_user.id == playlist["user_id"]
+        psong["queued"] = true
+      end
+      playlist["psongs"] << psong
+      $redis.set(playlist_id, playlist.to_json)
+    elsif (playlist = Playlist.find(playlist_id))
+      if (song = Song.find_by(deezer_id: song_id))
+        psong = Psong.create(song_id: song.id, playlist_id: playlist_id)
+        if (!is_logged_in || !isOwner(current_user, playlist))
+          psong.update_column(:queued, false)
+        end
+      else
+        json_response = deezer_song(song_id) 
+        song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
+        psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
+        if (!is_logged_in || !isOwner(current_user, playlist))
+          psong.update_column(:queued, false)
+        end
       end
     else
-      json_response = deezer_song(song_id) 
-      song = playlist.songs.create(name: json_response['title'], artist: json_response['contributors'].first['name'], deezer_id: song_id)
-      psong = Psong.find_by(playlist_id: playlist_id, song_id: song.id)
-      if (!is_logged_in || !isOwner(current_user, playlist))
-        psong.update_column(:queued, false)
-      end
-      if (plst = $redis.get(playlist_id))
-        plst = JSON.parse(plst)
-        playa = PlaylistDBHelper.new(plst)
-        playa.songs << SongCacheHelper.new(song)
-        playa.psongs << PsongCacheHelper.new(psong)
-        $redis.set(playlist_id, playa.to_json)
-      end
+      redirect_to root_url 
     end
   end
 
