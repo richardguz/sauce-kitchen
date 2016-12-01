@@ -79,7 +79,10 @@ class PlaylistsController < ApplicationController
     data = playlist ? { :title => playlist.title, 
                         :owner => playlist.user.id, 
                         :psongs => psong_obj,
-                        :songs => playlist.songs } : nil
+                        :songs => playlist.songs,
+                        :current_song_title => playlist.current_song_title,
+                        :current_song_artist => playlist.current_song_artist,
+                        :playing => playlist.playing } : nil
                         #do something like below to get the votes passed in
     render :json => data
   end

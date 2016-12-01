@@ -12,9 +12,17 @@ function pollPlaylist(pid, uid){
 		//else
 		//	$('#title').text(playlist['title']);
 
-		//to replace the dynaspan functionality
+		//updating playlist info
 		$('#title').text(playlist['title']);
 		$('#current_song').text(playlist['current_song_title'] + ' - ' + playlist['current_song_artist']);
+		console.log(playlist['playing']);
+		if (playlist['playing'] == false){
+			$("#now_playing").addClass('hidden');
+		}
+		else{
+			$("#now_playing").removeClass('hidden');
+		}
+
 
 		//updates the songs and how they're displayed
 		for (j = 0; j < songs.length; j++){
